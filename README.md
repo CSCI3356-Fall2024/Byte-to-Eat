@@ -1,5 +1,6 @@
 # Byte-to-Eat
 
+## setup
 use python 3.10.12
 
 python -m venv .venv
