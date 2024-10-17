@@ -1,3 +1,4 @@
 django-crispy-forms
 crispy-bootstrap4
 Django
+social-auth-app-django
