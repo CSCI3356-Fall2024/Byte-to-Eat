@@ -28,6 +28,7 @@ if __name__ == '__main__':
 
 #creates superuser
 #python3 manage.py createsuperuser
+#created superuser: username, password: password
 
 #makes migrations-- need to run everytime we make a change to the database models
 #python3 manage.py makemigrations

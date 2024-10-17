@@ -4,7 +4,14 @@
     <div class="row">
         <div class="col-sm-12 mb-3">
             <h1 class="text-left">Profile</h1>
-            <h4 class="text-center">Welcome {{ user.username }}</h4>
+            <h4 class="text-center">
+                Welcome 
+                {% if user.first_name or user.last_name %}
+                    {{ user.first_name }} {{ user.last_name }}
+                {% else %}
+                    {{ user.username }}
+                {% endif %}
+            </h4>
         </div>
     </div>
 {% endblock %}
