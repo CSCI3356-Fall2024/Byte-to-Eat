@@ -14,4 +14,10 @@
             </h4>
         </div>
     </div>
+    <h2>Complete Your Profile</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
 {% endblock %}
