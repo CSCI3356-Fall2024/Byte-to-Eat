@@ -61,8 +61,8 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',  #For google OAuth
 ]
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY='851560519566-8uo6g4t3em0dbudam5h9ue0he4n7ood4.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY='958352145802-frth3os6cld0nsbujsg873e67tdr6pvf.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 #SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/complete/google-oauth2/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/social-auth/complete/google-oauth2/'
 
