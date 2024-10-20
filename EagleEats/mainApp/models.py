@@ -16,6 +16,9 @@ class Profile(models.Model):
     graduation_year = models.IntegerField(blank=True, null=True)
     eagle_id = models.CharField(max_length=20, blank=True, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
+    first_name = models.CharField(max_length=100, blank=True, null=False)
+    last_name = models.CharField(max_length=100, blank=True, null=False)
+    email = models.CharField(max_length=100, blank=True, null=False)
     group_id = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
