@@ -5,25 +5,30 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Profile
 from .forms import ProfileForm
+import requests
+
+api_link = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json"
+
 # Create your views here.
 def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
+    try:
+        # Make a GET request to the API endpoint using requests.get()
+        header = {'Authorization': 'Bearer ' + request.user.social_auth.get().extra_data['access_token']}
+        response = requests.get(api_link, headers=header)
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            posts = response.json()
+            print(posts)
+        else:
+            print('Error:', response.status_code)
+    except requests.exceptions.RequestException as e:
+  
+        # Handle any network-related errors or exceptions
+        print('Error:', e)
 
-            # Check if the profile exists and is complete
-            if not hasattr(user, 'profile') or not user.profile.major:
-                # Redirect to the profile page if the profile is incomplete
-                return redirect('profile')
-            else:
-                # Redirect to the home page if the profile is complete
-                return redirect('/')
-    else:
-        form = AuthenticationForm()
 
-    return render(request, 'login.html', {'form': form})
+
+    return render(request, 'login.html')
 
 @login_required
 def home(request):
