@@ -10,7 +10,8 @@ import requests
 # Create your views here.
 def login(request):
     return render(request, 'login.html')
-
+def home(request):
+    return render(request, 'home.html')
 @login_required
 def post_login_redirect(request):
     is_first_login = request.session.get('is_first_login', False)
