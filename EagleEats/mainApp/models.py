@@ -9,7 +9,8 @@ class Profile(models.Model):
         ('mod', 'Moderator'),
         ('admin', 'Admin'),
     ]
-
+    
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     major = models.CharField(max_length=100, blank=True, null=True)
     school = models.CharField(max_length=100, blank=True, null=True)

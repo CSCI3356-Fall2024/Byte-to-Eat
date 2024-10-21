@@ -5,6 +5,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Profile
 from .forms import ProfileForm
+
 # Create your views here.
 def login(request):
     if request.method == 'POST':
@@ -34,7 +35,7 @@ def profile(request):
     profile = request.user.profile
 
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             return redirect('/')  # Redirect to the homepage after updating the profile
