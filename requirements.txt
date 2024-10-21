@@ -2,4 +2,4 @@ django-crispy-forms
 crispy-bootstrap4
 Django
 social-auth-app-django
-Pillow==<11.0.0>
+Pillow==11.0.0
