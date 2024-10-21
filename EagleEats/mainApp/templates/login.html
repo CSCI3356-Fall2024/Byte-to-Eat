@@ -1,12 +1,22 @@
 {% extends 'base.html' %} 
 {% block title %}Sign in{% endblock %} 
 {% block content %} 
-    <div class="row">
-        <div class="col-md-8 mx-auto social-container my-2 order-md-1">
-            <button>
-                <a href="{% url 'social:begin' 'google-oauth2' %}">Login With Google</a>
-
-            </button>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Sign In</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-danger btn-block">
+                                <i class="fab fa-google"></i> Login With Google
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
