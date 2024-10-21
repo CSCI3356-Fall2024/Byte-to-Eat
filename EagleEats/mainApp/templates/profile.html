@@ -24,8 +24,7 @@
         {% endif %}
         <div class="row">
             <div class="col-sm-12 text-center">
-                <h2>Complete Your Profile</h2>
-                <button id="editButton" class="btn btn-secondary mb-3">Edit</button>
+                <button id="editButton" class="btn btn-secondary mb-3">Edit Profile Picture</button>
                 <div id="profilePicForm" style="display: none;">
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -36,18 +35,11 @@
                         <button type="submit" class="btn btn-primary">Update Profile Picture</button>
                     </form>
                 </div>
-                <div class="row">" "
-                </div>
+                <h2>Complete Your Profile</h2>
                 <div id="staticText">
-                    <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
-                    <p>Email: {{ user.profile.email }}</p>
-                    <p>Major: {{ user.profile.major }}</p>
-                    <p>School: {{ user.profile.school }}</p>
-                    <p>Graduation Year: {{ user.profile.graduation_year }}</p>
-                    <p>Eagle ID: {{ user.profile.eagle_id }}</p>
-                    <p>User Type: {{ user.profile.user_type }}</p>
-                </div>
-                <div id="editForm" style="display: none;">
+                    <p>First Name: {{ user.first_name }}</p>
+                    <p>Last Name: {{ user.last_name }}</p>
+                    <p>Email: {{ user.email }}</p>
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group mb-3 text-left">
@@ -80,16 +72,10 @@
     <script>
         document.getElementById('editButton').addEventListener('click', function() {
             var profilePicForm = document.getElementById('profilePicForm');
-            var editForm = document.getElementById('editForm');
-            var staticText = document.getElementById('staticText');
             if (profilePicForm.style.display === 'none') {
                 profilePicForm.style.display = 'block';
-                editForm.style.display = 'block';
-                staticText.style.display = 'none';
             } else {
                 profilePicForm.style.display = 'none';
-                editForm.style.display = 'none';
-                staticText.style.display = 'block';
             }
         });
     </script>
