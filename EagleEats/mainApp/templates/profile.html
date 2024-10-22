@@ -8,25 +8,21 @@
     <!-- Profile Picture -->
     <div class="row">
         <div class="col-sm-12 text-center">
-            {% if user.profile.profile_picture %}
-                <img id="profileImage" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
-                     class="rounded-circle img-thumbnail"
-                     style="width: 150px; height: 150px; object-fit: cover;">
-            {% else %}
-                <img id="profileImage" src="{% static 'img/profile.png' %}" alt="Default Profile Picture"
-                     class="rounded-circle img-thumbnail"
-                     style="width: 150px; height: 150px; object-fit: cover;">
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Upload Text -->
-    <div class="row">
-        <div class="col-sm-12 text-center">
-            <!-- Hidden File Input -->
-            <input type="file" id="id_profile_picture" name="profile_picture" style="display: none;">
-            <!-- Clickable Text -->
-            <label for="id_profile_picture" class="text-muted" style="cursor: pointer;">Upload Profile Picture</label>
+            <div class="profile-picture-container">
+                {% if user.profile.profile_picture %}
+                    <img id="profileImage" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                         class="rounded-circle img-thumbnail"
+                         style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img id="profileImage" src="{% static 'img/profile.png' %}" alt="Default Profile Picture"
+                         class="rounded-circle img-thumbnail"
+                         style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+                <label for="id_profile_picture" class="profile-edit-icon">
+                    <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                </label>
+                <input type="file" id="id_profile_picture" name="profile_picture" style="display: none;">
+            </div>
         </div>
     </div>
 
@@ -70,18 +66,33 @@
                 <!-- Editable Fields -->
                 <div class="form-group mb-3">
                     {{ form.major|as_crispy_field }}
+                    <div class="edit-icon">
+                        <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     {{ form.school|as_crispy_field }}
+                    <div class="edit-icon">
+                        <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     {{ form.graduation_year|as_crispy_field }}
+                    <div class="edit-icon">
+                        <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     {{ form.eagle_id|as_crispy_field }}
+                    <div class="edit-icon">
+                        <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     {{ form.user_type|as_crispy_field }}
+                    <div class="edit-icon">
+                        <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                    </div>
                 </div>
 
                 <!-- Save Button -->
@@ -95,23 +106,44 @@
 
 <!-- Styling -->
 <style>
-    .form-control, select.form-control {
+    .form-control, 
+    select.form-control,
+    input[type="text"],
+    input[type="email"],
+    input[readonly] {
         display: block;
         width: 100%;
         max-width: 400px;
         margin: 0 auto;
-        border: 2px solid #004400; /* Dark green border */
+        border: 4px solid #6f8f40 !important;
+        border-radius: 6px;
+        padding: 8px 12px;
         box-sizing: border-box;
+        transition: border-color 0.15s ease-in-out;
     }
 
-    /* Ensure select elements also receive the same styling */
+    input[readonly] {
+        background-color: #f8f9fa !important;
+        color: #495057 !important;
+        cursor: not-allowed;
+        border: 4px solid #6f8f40 !important;
+    }
+
+    .form-control:focus,
+    select.form-control:focus {
+        border-color: #8bc34a !important;
+        box-shadow: 0 0 0 0.25rem rgba(111, 143, 64, 0.3) !important;
+        outline: none;
+    }
+
     select {
         display: block;
         width: 100% !important;
         max-width: 400px;
         margin: 0 auto;
-        border: 2px solid #004400;
+        border: 4px solid #6f8f40 !important;
         box-sizing: border-box;
+        background-color: white;
     }
 
     .form-group.mb-3 label {
@@ -121,15 +153,110 @@
         margin: 0 auto;
         text-align: left;
         padding-left: 10px;
-    }
-
-    input[readonly] {
-        background-color: #e9ecef; /* Light grey background to indicate read-only */
-        color: #6c757d; /* Grey text */
+        margin-bottom: 5px;
+        color: #495057;
+        font-weight: 600;
     }
 
     .text-right {
         text-align: right;
+        max-width: 400px;
+        margin: 20px auto;
+    }
+
+    .btn-success {
+        background-color: #6f8f40;
+        border-color: #6f8f40;
+        padding: 8px 20px;
+        border-width: 3px;
+    }
+
+    .btn-success:hover {
+        background-color: #8bc34a;
+        border-color: #8bc34a;
+    }
+
+    .asteriskField {
+        color: #6f8f40;
+        margin-left: 3px;
+    }
+
+    .rounded-circle.img-thumbnail {
+        border: 4px solid #6f8f40;
+        padding: 3px;
+    }
+
+    label[for="id_profile_picture"] {
+        color: #6f8f40;
+        margin-top: 10px;
+        font-size: 0.9rem;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+
+    .btn-link {
+        color: #6f8f40;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .btn-link:hover {
+        color: #8bc34a;
+        text-decoration: underline;
+    }
+
+    .form-group.mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .edit-icon {
+        position: absolute;
+        right: calc(50% - 230px);
+        top: 35px;
+        pointer-events: none;
+    }
+
+    .edit-icon img {
+        width: 25px;
+        height: 25px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .edit-icon:hover img {
+        opacity: 1;
+    }
+
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-edit-icon {
+        position: absolute;
+        right: -40px;
+        top: 20%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .profile-edit-icon img {
+        width: 25px;
+        height: 25px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .profile-edit-icon:hover img {
+        opacity: 1;
+    }
+
+    .upload-text {
+        display: none;
     }
 </style>
 

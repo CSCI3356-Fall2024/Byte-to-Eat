@@ -21,7 +21,7 @@
         padding: 0.5em 1em;
         position: relative;
       }
-
+    
       .navbar-bottom-bar {
         height: 0.25em;
         background-color: black;
@@ -30,61 +30,75 @@
         left: 0;
         right: 0;
       }
-
+    
       .navbar-brand {
         display: flex;
         align-items: center;
       }
-
+    
       .navbar-brand img.logo {
         width: 50px;
         height: auto;
-        margin-right: 10px;
+        margin-right: 15px;
+        margin-left: 10px;
       }
-
+    
       .navbar-brand .brand-text-container {
         display: flex;
         flex-direction: column;
       }
-
+    
       .navbar-brand .brand-text {
         font-size: 1.5rem;
         font-weight: bold;
         color: white;
       }
-
+    
       .navbar-brand .subtext {
         font-size: 1rem;
         font-weight: bold;
         color: #8d1c2e;
       }
-
+    
       .navbar-nav {
         width: auto;
         display: flex;
         align-items: center;
+        gap: 20px;
       }
-
+    
+      .nav-item {
+        display: flex;
+        align-items: center;
+      }
+    
       .nav-item .nav-link {
-        color: white;
+        color: white !important;
         font-weight: bold;
         border-radius: 25px;
         background-color: #6f8f40;
-        margin: 0 50px;
-        padding: 10px 30px;
+        padding: 10px 20px;
         border: 2px solid white;
         font-size: 1.2rem;
+        width: 160px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+        margin: 0 10px;
+        white-space: nowrap;
       }
-
+    
       .nav-link:hover {
         background-color: #b8db15;
-        color: #fff;
+        color: white !important;
       }
-
+    
       .nav-item.active .nav-link {
         background-color: #b8db15;
       }
-
+    
       .profile-icon {
         width: 50px;
         height: 50px;
@@ -93,30 +107,42 @@
         background-color: #8fb25a;
         overflow: hidden;
       }
+    
       .profile-link {
-        margin-left: auto; 
-        margin-right: 30px; 
+        margin-left: auto;
+        margin-right: 30px;
       }
-
+    
       .profile-icon img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-
+    
       .profile-icon:hover {
         background-color: #b8db15;
-        color: #fff;
       }
-
+    
       .navbar .dropdown-menu {
         background-color: #6f8f40;
         box-shadow: none;
       }
-
+    
       .navbar .dropdown-item:hover {
         background-color: #b8db15;
-        color: #fff;
+        color: white;
+      }
+    
+      @media (max-width: 992px) {
+        .nav-item .nav-link {
+          width: 140px;
+          font-size: 1rem;
+          padding: 8px 15px;
+        }
+        
+        .navbar-nav {
+          gap: 10px;
+        }
       }
     </style>
   </head>
