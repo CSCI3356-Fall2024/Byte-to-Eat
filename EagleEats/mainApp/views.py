@@ -1,17 +1,15 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from django.contrib.auth import login as auth_login
-from django.contrib.auth.forms import AuthenticationForm
-from .models import Profile
 from .forms import ProfileForm
-import requests
 
 # Create your views here.
 def login(request):
     return render(request, 'login.html')
+
 def home(request):
     return render(request, 'home.html')
+
 @login_required
 def post_login_redirect(request):
     if request.session.get('is_first_login', False):

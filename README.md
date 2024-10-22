@@ -14,5 +14,5 @@ MAC: source .venv/bin/activate (I think)
 pip install -r requirements.txt
 
 ### when adding/removing a new python library please add to requirements.txt then run:
-pip -freeze requirements.txt
+pip freeze -l > requirements.txt
 
