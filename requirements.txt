@@ -1,7 +1,4 @@
 django-crispy-forms
-crispy-bootstrap4
+crispy-bootstrap5
 Django
-<<<<<<< Updated upstream
-social-auth-app-django
-=======
 social-auth-app-django
