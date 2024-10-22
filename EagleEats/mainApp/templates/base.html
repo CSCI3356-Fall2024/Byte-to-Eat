@@ -5,45 +5,66 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="{% static 'index.css' %}" />
     <style>
       .navbar {
         background-color: #b8db15;
-        border-bottom: 0.25em solid black;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0.5em 1em;
+        position: relative;
       }
+
+      .navbar-bottom-bar {
+        height: 0.25em;
+        background-color: black;
+        position: absolute;
+        bottom: -0.25em;
+        left: 0;
+        right: 0;
+      }
+
       .navbar-brand {
         display: flex;
         align-items: center;
       }
+
       .navbar-brand img.logo {
         width: 50px;
         height: auto;
-        margin-right: 10px; 
+        margin-right: 10px;
       }
+
       .navbar-brand .brand-text-container {
         display: flex;
         flex-direction: column;
       }
+
       .navbar-brand .brand-text {
         font-size: 1.5rem;
         font-weight: bold;
         color: white;
       }
+
       .navbar-brand .subtext {
         font-size: 1rem;
         font-weight: bold;
         color: #8d1c2e;
       }
+
       .navbar-nav {
         width: auto;
         display: flex;
         align-items: center;
       }
+
       .nav-item .nav-link {
         color: white;
         font-weight: bold;
@@ -54,13 +75,16 @@
         border: 2px solid white;
         font-size: 1.2rem;
       }
+
       .nav-link:hover {
         background-color: #b8db15;
         color: #fff;
       }
+
       .nav-item.active .nav-link {
         background-color: #b8db15;
       }
+
       .profile-icon {
         width: 50px;
         height: 50px;
@@ -69,53 +93,83 @@
         background-color: #8fb25a;
         overflow: hidden;
       }
+      .profile-link {
+        margin-left: auto; 
+        margin-right: 30px; 
+      }
+
       .profile-icon img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-      .profile-icon:hover{
+
+      .profile-icon:hover {
+        background-color: #b8db15;
+        color: #fff;
+      }
+
+      .navbar .dropdown-menu {
+        background-color: #6f8f40;
+        box-shadow: none;
+      }
+
+      .navbar .dropdown-item:hover {
         background-color: #b8db15;
         color: #fff;
       }
     </style>
   </head>
-  
+
   <body>
     <nav class="navbar navbar-expand-lg">
       <a class="navbar-brand" href="{% url 'home' %}">
         <img class="logo" src="{% static 'img/eagle.png' %}" alt="Eagle Eats Logo" />
         <div class="brand-text-container">
           <span class="brand-text">Eagle Eats</span>
-          <span class="subtext">Boston College</span> 
+          <span class="subtext">Boston College</span>
         </div>
       </a>
-      <div class="collapse navbar-collapse justify-content-center">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Rewards</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Actions</a>
-          </li>
-          {% if user.profile.user_type == 'admin' or user.profile.user_type == 'mod'%}
-          <li class="nav-item">
-            <a class="nav-link" href="#">Campaign</a>
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="#">Groups</a>
-          </li>
-        </ul>
-      </div>
-      <a class="nav-link" href="{% url 'profile' %}">
+      <nav class="navbar navbar-light">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Rewards</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Actions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Campaign</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Groups</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <a class="nav-link profile-link" href="{% url 'profile' %}">
         <div class="profile-icon">
           <img src="{% static 'img/profile.png' %}" alt="Profile Icon" />
         </div>
       </a>
+
+      <div class="navbar-bottom-bar"></div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container-fluid">
       <div>
         <h1 class="text-center">{% block title %}{% endblock %}</h1>
@@ -125,9 +179,11 @@
       </div>
     </div>
 
-    
     <!-- Bootstrap JS, Popper.js, and necessary scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+XjyjyC5nPSMM9LgC+0Hx2R0cI1MY6MPF5M3lfsUE/rCpxjGZnxDi4Jm/jfaEgi" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9GZqzzT+K5B5Kv5PhS5P5U1bi4elE1PoRYc4s++KhV8fPeWgHJLDV/6" crossorigin="anonymous"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
