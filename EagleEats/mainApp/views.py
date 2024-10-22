@@ -5,36 +5,34 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Profile
 from .forms import ProfileForm
+import requests
+
 # Create your views here.
 def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-
-            # Check if the profile exists and is complete
-            if not hasattr(user, 'profile') or not user.profile.major:
-                # Redirect to the profile page if the profile is incomplete
-                return redirect('profile')
-            else:
-                # Redirect to the home page if the profile is complete
-                return redirect('/')
+    return render(request, 'login.html')
+def home(request):
+    return render(request, 'home.html')
+@login_required
+def post_login_redirect(request):
+    is_first_login = request.session.get('is_first_login', False)
+    print(is_first_login)
+    if is_first_login:
+        return redirect('profile')
     else:
-        form = AuthenticationForm()
+        return redirect('/')
 
-    return render(request, 'login.html', {'form': form})
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    profile = request.user.profile
+    return render(request, 'home.html', {'profile': profile})
 
 @login_required
 def profile(request):
     profile = request.user.profile
 
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             return redirect('/')  # Redirect to the homepage after updating the profile

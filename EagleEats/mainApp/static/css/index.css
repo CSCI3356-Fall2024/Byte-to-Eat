@@ -23,3 +23,11 @@
     color: white;
     text-decoration: none;
 }
+
+img.profile-picture {
+    width: 10px; !important
+    height: 10px; !important
+    object-fit: cover; !important
+    border: 2px solid #ddd; !important
+    max-width: 100%; !important
+}

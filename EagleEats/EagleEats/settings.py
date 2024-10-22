@@ -64,11 +64,30 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',  #For google OAuth
 ]
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY='851560519566-8uo6g4t3em0dbudam5h9ue0he4n7ood4.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY='958352145802-frth3os6cld0nsbujsg873e67tdr6pvf.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 #SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/complete/google-oauth2/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/social-auth/complete/google-oauth2/'
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',                 # Create user if it doesn't exist
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'mainApp.pipeline.check_first_login',                      # Custom step to check first login
+)
+
+LOGIN_REDIRECT_URL = '/post-login/'
 
 ROOT_URLCONF = 'EagleEats.urls'
 
@@ -138,6 +157,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

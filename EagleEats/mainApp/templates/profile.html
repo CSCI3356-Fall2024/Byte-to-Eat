@@ -2,25 +2,97 @@
 {% extends 'base.html' %} 
 {% block title %}Profile{% endblock %} 
 {% block content %} 
-    <div class="row">
-        <div class="col-sm-12 mb-3">
-            <h1 class="text-left">Profile</h1>
-            <h4 class="text-center">
-                Welcome 
-                {% if user.first_name or user.last_name %}
-                    {{ user.first_name }} {{ user.last_name }}
-                {% else %}
-                    {{ user.username }}
-                {% endif %}
-            </h4>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 mb-3 text-center">
+                <h4>
+                    Welcome 
+                    {% if user.first_name or user.last_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                </h4>
+            </div>
+        </div>
+        {% if user.profile.profile_picture %}
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <button id="editButton" class="btn btn-secondary mb-3">Edit Profile Picture</button>
+                <div id="profilePicForm" style="display: none;">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            {{ form.profile_picture.label_tag }}
+                            {{ form.profile_picture }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile Picture</button>
+                    </form>
+                </div>
+                <div id="staticText">
+                    <p>First Name: {{ user.first_name }}</p>
+                    <p>Last Name: {{ user.last_name }}</p>
+                    <p>Email: {{ user.email }}</p>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group mb-3 text-left">
+                            <label for="id_major" class="w-100">Major</label>
+                            {{ form.major }}
+                        </div>
+                        <div class="form-group mb-3 text-left">
+                            <label for="id_school" class="w-100">School</label>
+                            {{ form.school }}
+                        </div>
+                        <div class="form-group mb-3 text-left">
+                            <label for="id_graduation_year" class="w-100">Graduation Year</label>
+                            {{ form.graduation_year }}
+                        </div>
+                        <div class="form-group mb-3 text-left">
+                            <label for="id_eagle_id" class="w-100">Eagle ID</label>
+                            {{ form.eagle_id }}
+                        </div>
+                        <div class="form-group mb-3 text-left">
+                            <label for="id_user_type" class="w-100">User Type</label>
+                            {{ form.user_type }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <h2>Complete Your Profile</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update</button>
-    </form>
+
+    <script>
+        document.getElementById('editButton').addEventListener('click', function() {
+            var profilePicForm = document.getElementById('profilePicForm');
+            if (profilePicForm.style.display === 'none') {
+                profilePicForm.style.display = 'block';
+            } else {
+                profilePicForm.style.display = 'none';
+            }
+        });
+    </script>
+
+<div class="row mt-4">
+    <div class="col-sm-12 text-center">
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-link" type="submit" style="padding: 0; background: none; border: none;">
+                    Logout
+                </button>
+            </form>
+        {% else %}
+            <a class="btn btn-link" href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
 =======
 {% extends 'base.html' %}
