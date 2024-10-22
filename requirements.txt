@@ -1,4 +1,10 @@
 django-crispy-forms
 crispy-bootstrap4
 Django
+<<<<<<< Updated upstream
 social-auth-app-django
+=======
+social-auth-app-django
+Pillow==11.0.0
+crispy-bootstrap5
+>>>>>>> Stashed changes

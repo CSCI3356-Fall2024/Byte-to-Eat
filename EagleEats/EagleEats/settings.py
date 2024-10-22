@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social_django',       # Add this Line
+    'social_django', 
     'mainApp',   # Add your application 
+    'crispy_forms', 
+    'crispy_bootstrap5',
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 #added this section for Google OAuth
 AUTHENTICATION_BACKENDS = [
