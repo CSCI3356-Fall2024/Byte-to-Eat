@@ -1,83 +1,151 @@
-{% extends 'base.html' %} 
-{% block title %}Profile{% endblock %} 
-{% block content %} 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12 mb-3 text-center">
-                <h4>
-                    Welcome 
-                    {% if user.first_name or user.last_name %}
-                        {{ user.first_name }} {{ user.last_name }}
-                    {% else %}
-                        {{ user.username }}
-                    {% endif %}
-                </h4>
-            </div>
-        </div>
-        {% if user.profile.profile_picture %}
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
-                </div>
-            </div>
-        {% endif %}
-        <div class="row">
-            <div class="col-sm-12 text-center">
-                <button id="editButton" class="btn btn-secondary mb-3">Edit Profile Picture</button>
-                <div id="profilePicForm" style="display: none;">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-group mb-3">
-                            {{ form.profile_picture.label_tag }}
-                            {{ form.profile_picture }}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Update Profile Picture</button>
-                    </form>
-                </div>
-                <div id="staticText">
-                    <p>First Name: {{ user.first_name }}</p>
-                    <p>Last Name: {{ user.last_name }}</p>
-                    <p>Email: {{ user.email }}</p>
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-group mb-3 text-left">
-                            <label for="id_major" class="w-100">Major</label>
-                            {{ form.major }}
-                        </div>
-                        <div class="form-group mb-3 text-left">
-                            <label for="id_school" class="w-100">School</label>
-                            {{ form.school }}
-                        </div>
-                        <div class="form-group mb-3 text-left">
-                            <label for="id_graduation_year" class="w-100">Graduation Year</label>
-                            {{ form.graduation_year }}
-                        </div>
-                        <div class="form-group mb-3 text-left">
-                            <label for="id_eagle_id" class="w-100">Eagle ID</label>
-                            {{ form.eagle_id }}
-                        </div>
-                        <div class="form-group mb-3 text-left">
-                            <label for="id_user_type" class="w-100">User Type</label>
-                            {{ form.user_type }}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Update Profile</button>
-                    </form>
-                </div>
-            </div>
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Profile Picture -->
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            {% if user.profile.profile_picture %}
+                <img id="profileImage" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                     class="rounded-circle img-thumbnail"
+                     style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
+                <img id="profileImage" src="{% static 'img/profile.png' %}" alt="Default Profile Picture"
+                     class="rounded-circle img-thumbnail"
+                     style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
         </div>
     </div>
 
-    <script>
-        document.getElementById('editButton').addEventListener('click', function() {
-            var profilePicForm = document.getElementById('profilePicForm');
-            if (profilePicForm.style.display === 'none') {
-                profilePicForm.style.display = 'block';
-            } else {
-                profilePicForm.style.display = 'none';
-            }
-        });
-    </script>
+    <!-- Upload Text -->
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <!-- Hidden File Input -->
+            <input type="file" id="id_profile_picture" name="profile_picture" style="display: none;">
+            <!-- Clickable Text -->
+            <label for="id_profile_picture" class="text-muted" style="cursor: pointer;">Upload Profile Picture</label>
+        </div>
+    </div>
 
+    <!-- Welcome Message -->
+    <div class="row">
+        <div class="col-sm-12 mb-3 text-center">
+            <h4>Welcome
+                {% if user.first_name or user.last_name %}
+                    {{ user.first_name }} {{ user.last_name }}
+                {% else %}
+                    {{ user.username }}
+                {% endif %}
+            </h4>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Read-only First Name -->
+                <div class="form-group mb-3">
+                    <label for="id_first_name">First Name</label>
+                    <input type="text" id="id_first_name" class="form-control" value="{{ user.first_name }}" readonly>
+                </div>
+
+                <!-- Read-only Last Name -->
+                <div class="form-group mb-3">
+                    <label for="id_last_name">Last Name</label>
+                    <input type="text" id="id_last_name" class="form-control" value="{{ user.last_name }}" readonly>
+                </div>
+
+                <!-- Read-only Email -->
+                <div class="form-group mb-3">
+                    <label for="id_email">Email Address</label>
+                    <input type="email" id="id_email" class="form-control" value="{{ user.email }}" readonly>
+                </div>
+
+                <!-- Editable Fields -->
+                <div class="form-group mb-3">
+                    {{ form.major|as_crispy_field }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.school|as_crispy_field }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.graduation_year|as_crispy_field }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.eagle_id|as_crispy_field }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.user_type|as_crispy_field }}
+                </div>
+
+                <!-- Save Button -->
+                <div class="text-right">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Styling -->
+<style>
+    .form-control, select.form-control {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        border: 2px solid #004400; /* Dark green border */
+        box-sizing: border-box;
+    }
+
+    /* Ensure select elements also receive the same styling */
+    select {
+        display: block;
+        width: 100% !important;
+        max-width: 400px;
+        margin: 0 auto;
+        border: 2px solid #004400;
+        box-sizing: border-box;
+    }
+
+    .form-group.mb-3 label {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: left;
+        padding-left: 10px;
+    }
+
+    input[readonly] {
+        background-color: #e9ecef; /* Light grey background to indicate read-only */
+        color: #6c757d; /* Grey text */
+    }
+
+    .text-right {
+        text-align: right;
+    }
+</style>
+
+<!-- JavaScript for Image Preview -->
+<script>
+    document.getElementById('id_profile_picture').addEventListener('change', function(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('profileImage');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    });
+</script>
+
+<!-- Logout Section -->
 <div class="row mt-4">
     <div class="col-sm-12 text-center">
         {% if user.is_authenticated %}
