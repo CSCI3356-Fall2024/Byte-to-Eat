@@ -28,13 +28,17 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        # Automatically create profile with email, first name, last name, and school
+        email_domain = instance.email.split('@')[1] if instance.email else None
+        
+        # Set school based on email domain
+        school_name = "Boston College" if email_domain == "bc.edu" else email_domain
+
         Profile.objects.create(
             user=instance,
             email=instance.email,
             first_name=instance.first_name,
             last_name=instance.last_name,
-            school=instance.email.split('@')[1] if instance.email else None  # Assuming school is based on the email domain
+            school=school_name
         )
 
 @receiver(post_save, sender=User)
