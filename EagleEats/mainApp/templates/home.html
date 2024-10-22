@@ -3,7 +3,14 @@
 {% block content %} 
     <div class="row">
         <div class="col-sm-12 mb-3">
-            <h4 class="text-center">Welcome to the Homepage</h4>
+            <h4 class="text-center">Welcome to the Homepage,
+                {% if user.first_name or user.last_name %}
+                    {{ user.first_name }} {{ user.last_name }}
+                {% else %}
+                    {{ user.username }}
+                {% endif %}
+            </h4>
+            <h4 class="text-center">You are logged in as a {{ profile.user_type }}</h4>
         </div>
     </div>
 {% endblock %}

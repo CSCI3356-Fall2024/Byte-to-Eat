@@ -24,7 +24,8 @@ def post_login_redirect(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    profile = request.user.profile
+    return render(request, 'home.html', {'profile': profile})
 
 @login_required
 def profile(request):
