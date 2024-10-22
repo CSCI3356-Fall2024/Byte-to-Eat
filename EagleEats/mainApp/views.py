@@ -14,9 +14,7 @@ def home(request):
     return render(request, 'home.html')
 @login_required
 def post_login_redirect(request):
-    is_first_login = request.session.get('is_first_login', False)
-    print(is_first_login)
-    if is_first_login:
+    if request.session.get('is_first_login', False):
         return redirect('profile')
     else:
         return redirect('/')
@@ -39,4 +37,4 @@ def profile(request):
     else:
         form = ProfileForm(instance=profile)
 
-    return render(request, 'profile.html', {'form': form})
+    return render(request, 'profile.html', {'form': form, 'profile': profile})

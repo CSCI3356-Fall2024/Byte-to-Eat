@@ -1,5 +1,3 @@
-from django.shortcuts import redirect
-
 def check_first_login(backend, user, response, *args, **kwargs):
     # Check if it's the first time the user is logging in
     if user and not user.is_staff and not user.last_login:

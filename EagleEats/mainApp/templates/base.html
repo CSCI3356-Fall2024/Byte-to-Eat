@@ -151,9 +151,11 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Actions</a>
             </li>
+            {% if profile.user_type == 'admin' or profile.user_type == 'mod'%}
             <li class="nav-item">
               <a class="nav-link" href="#">Campaign</a>
             </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="#">Groups</a>
             </li>
