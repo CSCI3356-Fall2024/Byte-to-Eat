@@ -179,7 +179,7 @@
             </li>
             {% if profile.user_type == 'admin' or profile.user_type == 'mod'%}
             <li class="nav-item">
-              <a class="nav-link" href="#">Campaign</a>
+              <a class="nav-link" href="{% url 'campaign' %}">Campaign</a>
             </li>
             {% endif %}
             <li class="nav-item">

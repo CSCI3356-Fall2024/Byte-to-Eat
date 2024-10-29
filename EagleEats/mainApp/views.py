@@ -36,3 +36,9 @@ def profile(request):
         form = ProfileForm(instance=profile)
 
     return render(request, 'profile.html', {'form': form, 'profile': profile})
+
+@login_required
+def campaign(request):
+    campaign = request.campaign
+    return render(request, 'campaign.html', {'campaignModel': campaign})
+
