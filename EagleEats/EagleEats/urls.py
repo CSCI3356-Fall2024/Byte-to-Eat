@@ -13,7 +13,8 @@ urlpatterns = [
     path('social-auth/', include('social_django.urls', namespace='social')),
     path("", views.home, name='home'),
     path("profile/", views.profile, name='profile'),
-    path("home/", views.home, name='home')
+    path("home/", views.home, name='home'),
+    path("campaign/", views.campaign, name='campaign')
 ]
 
 if settings.DEBUG:

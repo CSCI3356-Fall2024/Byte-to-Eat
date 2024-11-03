@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container my-5">
+    <h2 class="text-center mb-4" style="font-size: 2rem; color: #66723D;">Campaigns</h2>
+
+    <section class="mb-5">
+        <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active</h3>
+        <div class="card" style="border: none;">
+            <table class="table">
+                <thead>
+                    <tr style="background-color: #66723D; color: white;">
+                        <th style="padding: 15px; text-align: left;">Name</th>
+                        <th style="padding: 15px; text-align: left;">Dates</th>
+                        <!-- Add Campaign Button in Header Row -->
+                        <th style="padding: 10px; width: 50px;">
+                            <div style="display: flex;">
+                                <button type="button" class="btn btn-success"
+                                style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1.2rem; 
+                                display: flex; align-items: center; justify-content: center; line-height: 2;">
+                                +
+                                </button>
+                            
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #f2f2f2;">
+                    {% for campaign in active_campaigns %}
+                        <tr>
+                            <td style="padding: 15px;">{{ campaign.name }}</td>
+                            <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
+                            <td></td> <!-- Empty cell to align with header -->
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" style="padding: 15px; text-align: center;">No active campaigns</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Inactive</h3>
+        <div class="card" style="border: none;">
+            <table class="table">
+                <thead>
+                    <tr style="background-color: #66723D; color: white;">
+                        <th style="padding: 15px; text-align: left;">Name</th>
+                        <th style="padding: 15px; text-align: left;">Dates</th>
+                        <!-- Add Campaign Button in Header Row -->
+                        <th style="padding: 10px; width: 50px;">
+                            <div style="display: flex;">
+                                <button type="button" class="btn btn-success"
+                                style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1.2rem; 
+                                display: flex; align-items: center; justify-content: center; line-height: 2;">
+                                +
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #f2f2f2;">
+                    {% for campaign in inactive_campaigns %}
+                        <tr>
+                            <td style="padding: 15px;">{{ campaign.name }}</td>
+                            <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
+                            <td></td> <!-- Empty cell to align with header -->
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" style="padding: 15px; text-align: center;">No inactive campaigns</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}
