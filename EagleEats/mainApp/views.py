@@ -49,23 +49,36 @@ def campaign(request):
     active_campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
     inactive_campaigns = Campaign.objects.filter(end_date__lt=today)
 
-    # Instantiate the forms
+    # Instantiate forms
     transaction_form = TransactionForm()
     campaign_form = CampaignForm()
 
-    # Retrieve transactions (if you want to display them)
-    transactions = Transaction.objects.filter(user=request.user)
+    # Check if request method is POST to process form submissions
+    if request.method == 'POST':
+        if 'transaction_form' in request.POST:
+            # Handle transaction form submission
+            transaction_form = TransactionForm(request.POST)
+            if transaction_form.is_valid():
+                transaction_form.save()
+                return redirect('campaign')  # Reload the page to show updated data
 
+        elif 'save_campaign' in request.POST:
+            # Handle campaign form submission
+            campaign_form = CampaignForm(request.POST, request.FILES)
+            if campaign_form.is_valid():
+                campaign_form.save()
+                return redirect('campaign')  # Reload the page to show the new campaign
+
+    # Render the forms and campaign data
     context = {
-        'campaignModel': Campaign,
         'profile': profile,
         'active_campaigns': active_campaigns,
         'inactive_campaigns': inactive_campaigns,
-        'transactions': transactions,
-        'transaction_form': transaction_form,  # Pass transaction form
-        'campaign_form': campaign_form,        # Pass campaign form
+        'transaction_form': transaction_form,
+        'campaign_form': campaign_form,
     }
     return render(request, 'campaign.html', context)
+
 
 @login_required
 def create_group(request):
