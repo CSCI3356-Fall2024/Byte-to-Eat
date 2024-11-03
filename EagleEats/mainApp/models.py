@@ -44,8 +44,6 @@ class Profile(models.Model):
     graduation_year = models.IntegerField(blank=True, null=True)
     eagle_id = models.CharField(max_length=20, blank=True, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
-    first_name = models.CharField(max_length=100, blank=True)
-    last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=100, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     
@@ -108,8 +106,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=instance,
             email=instance.email,
-            first_name=instance.first_name,
-            last_name=instance.last_name,
             school=school_name
         )
 
