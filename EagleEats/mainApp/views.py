@@ -19,7 +19,7 @@ def post_login_redirect(request):
 @login_required
 def home(request):
     profile = request.user.profile
-    users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')
+    users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
     return render(request, 'home.html', {'profile': profile, "users": users})
 
 @login_required
