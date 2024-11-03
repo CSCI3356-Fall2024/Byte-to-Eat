@@ -37,5 +37,6 @@ def profile(request):
 
 @login_required
 def campaign(request):
-    return render(request, 'campaign.html', {'campaignModel': campaign})
+    profile = request.user.profile
+    return render(request, 'campaign.html', {'campaignModel': campaign, 'profile': profile })
 
