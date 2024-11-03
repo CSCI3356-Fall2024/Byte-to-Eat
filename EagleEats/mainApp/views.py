@@ -10,6 +10,7 @@ def login(request):
 def home(request):
     return render(request, 'home.html')
 
+
 @login_required
 def post_login_redirect(request):
     if request.session.get('is_first_login', False):
