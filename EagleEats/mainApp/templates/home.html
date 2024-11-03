@@ -57,10 +57,12 @@
             </thead>
             <tbody>
                 {% for user in users %}
-                    <tr>
-                        <td>{{ forloop.counter }}) {{ user }}</td>
-                        <td>{{ user.points }}</td>
-                    </tr>
+                    {% if user.user_type == "student" %}
+                        <tr>
+                            <td>{{ forloop.counter }}) {{ user.first_name }} {{user.last_name}}</td>
+                            <td>{{ user.lifetime_points }}</td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
