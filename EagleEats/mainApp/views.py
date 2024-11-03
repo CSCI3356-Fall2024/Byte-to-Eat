@@ -8,10 +8,6 @@ from .forms import ProfileForm
 def login(request):
     return render(request, 'login.html')
 
-def home(request):
-    return render(request, 'home.html')
-
-
 @login_required
 def post_login_redirect(request):
     if request.session.get('is_first_login', False):
@@ -23,7 +19,7 @@ def post_login_redirect(request):
 @login_required
 def home(request):
     profile = request.user.profile
-    users = Profile.objects.all().filter(user_type="student")
+    users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')
     return render(request, 'home.html', {'profile': profile, "users": users})
 
 @login_required

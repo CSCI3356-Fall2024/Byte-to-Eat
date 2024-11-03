@@ -9,14 +9,14 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Lifetime Points</th>
+                    <th style="text-align: right;">Lifetime Points</th>
                 </tr>
             </thead>
             <tbody>
                 {% for u in users %}
                     {% if u.user_type == "student" %}
                         <tr>
-                            <td>{{ forloop.counter }} {{ u.first_name }} {{ u.last_name }}</td>
+                            <td>{{ forloop.counter }} ) {{ u.first_name }} {{ u.last_name }}</td>
                             <td style="text-align: right;">{{ u.lifetime_points }}</td>
                         </tr>
                     {% endif %}
@@ -35,12 +35,18 @@
         font-family: Arial, sans-serif;
         padding: 20px;
     }
+    h1 {
+        font-size: 2.5em;
+    }
     .leaderboard-container {
         width: 100%;
         padding: 20px;
         background-color: #789E4E;
         color: #fff;
         border-radius: 10px;
+    }
+    .leaderboard-container h2 {
+        font-size: 2em;
     }
     .table-container {
         max-height: 400px;
@@ -52,12 +58,13 @@
         margin-top: 10px;
     }
     th, td {
-        padding: 10px;
+        padding: 15px;
         text-align: left;
         border-bottom: 1px solid #4e4e4e;
+        font-size: 1.2em;
     }
     th {
-        font-size: 1.2em;
+        font-size: 1.5em;
         position: sticky;
         top: 0;
         background-color: #789E4E;
@@ -66,6 +73,7 @@
     .highlight {
         font-weight: bold;
         background-color: #5a7d3c;
+        font-size: 1.2em;
     }
     tr td:last-child {
         text-align: right;
