@@ -1,5 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from .models import Profile, Campaign, Transaction
+from django.shortcuts import redirect
+from .forms import ProfileForm
+from django.utils import timezone
+from .forms import TransactionForm, CampaignForm 
 from .forms import ProfileForm, GroupForm
 from .models import Group, Profile, GroupInvitation
 from django.contrib.auth.models import User 
@@ -38,7 +43,29 @@ def profile(request):
 @login_required
 def campaign(request):
     profile = request.user.profile
-    return render(request, 'campaign.html', {'campaignModel': campaign, 'profile': profile })
+
+    # Get campaigns based on active/inactive status
+    today = timezone.now()
+    active_campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
+    inactive_campaigns = Campaign.objects.filter(end_date__lt=today)
+
+    # Instantiate the forms
+    transaction_form = TransactionForm()
+    campaign_form = CampaignForm()
+
+    # Retrieve transactions (if you want to display them)
+    transactions = Transaction.objects.filter(user=request.user)
+
+    context = {
+        'campaignModel': Campaign,
+        'profile': profile,
+        'active_campaigns': active_campaigns,
+        'inactive_campaigns': inactive_campaigns,
+        'transactions': transactions,
+        'transaction_form': transaction_form,  # Pass transaction form
+        'campaign_form': campaign_form,        # Pass campaign form
+    }
+    return render(request, 'campaign.html', context)
 
 @login_required
 def create_group(request):

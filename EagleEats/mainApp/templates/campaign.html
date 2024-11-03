@@ -4,6 +4,19 @@
 <main class="container my-5">
     <h2 class="text-center mb-4" style="font-size: 2rem; color: #66723D;">Campaigns</h2>
 
+    <!-- Transaction Form Section -->
+    <section class="mb-5">
+        <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Add Transaction</h3>
+        <div class="card p-4" style="background-color: #f9f9f9; border: none;">
+            <form method="POST">
+                {% csrf_token %}
+                {{ transaction_form.as_p }}
+                <button type="submit" name="transaction_form" class="btn btn-primary">Add Transaction</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Active Campaigns Section -->
     <section class="mb-5">
         <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active</h3>
         <div class="card" style="border: none;">
@@ -12,15 +25,14 @@
                     <tr style="background-color: #66723D; color: white;">
                         <th style="padding: 15px; text-align: left;">Name</th>
                         <th style="padding: 15px; text-align: left;">Dates</th>
-                        <!-- Add Campaign Button in Header Row -->
                         <th style="padding: 10px; width: 50px;">
                             <div style="display: flex;">
+                                <!-- Trigger button for the campaign modal -->
                                 <button type="button" class="btn btn-success"
                                 style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1.2rem; 
-                                display: flex; align-items: center; justify-content: center; line-height: 2;">
-                                +
+                                display: flex; align-items: center; justify-content: center; line-height: 2;" data-bs-toggle="modal" data-bs-target="#campaignModal">
+                                    +
                                 </button>
-                            
                             </div>
                         </th>
                     </tr>
@@ -28,7 +40,7 @@
                 <tbody style="background-color: #f2f2f2;">
                     {% for campaign in active_campaigns %}
                         <tr>
-                            <td style="padding: 15px;">{{ campaign.name }}</td>
+                            <td style="padding: 15px;">{{ campaign.title }}</td>
                             <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
                             <td></td> <!-- Empty cell to align with header -->
                         </tr>
@@ -42,6 +54,7 @@
         </div>
     </section>
 
+    <!-- Inactive Campaigns Section -->
     <section>
         <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Inactive</h3>
         <div class="card" style="border: none;">
@@ -50,15 +63,13 @@
                     <tr style="background-color: #66723D; color: white;">
                         <th style="padding: 15px; text-align: left;">Name</th>
                         <th style="padding: 15px; text-align: left;">Dates</th>
-                        <!-- Add Campaign Button in Header Row -->
                         <th style="padding: 10px; width: 50px;">
                             <div style="display: flex;">
                                 <button type="button" class="btn btn-success"
                                 style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1.2rem; 
-                                display: flex; align-items: center; justify-content: center; line-height: 2;">
-                                +
+                                display: flex; align-items: center; justify-content: center; line-height: 2;" data-bs-toggle="modal" data-bs-target="#campaignModal">
+                                    +
                                 </button>
-                            
                             </div>
                         </th>
                     </tr>
@@ -66,7 +77,7 @@
                 <tbody style="background-color: #f2f2f2;">
                     {% for campaign in inactive_campaigns %}
                         <tr>
-                            <td style="padding: 15px;">{{ campaign.name }}</td>
+                            <td style="padding: 15px;">{{ campaign.title }}</td>
                             <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
                             <td></td> <!-- Empty cell to align with header -->
                         </tr>
@@ -79,5 +90,29 @@
             </table>
         </div>
     </section>
+
+    <!-- Campaign Modal for Adding New Campaign -->
+    <div class="modal fade" id="campaignModal" tabindex="-1" aria-labelledby="campaignModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #66723D; color: white;">
+                    <h5 class="modal-title" id="campaignModalLabel">Add Campaign</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ campaign_form.as_p }}
+                        <button type="submit" name="campaign_form" class="btn btn-primary">Save Campaign</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
+
+<!-- Bootstrap JavaScript for modal functionality -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
 {% endblock %}
