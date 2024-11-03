@@ -8,10 +8,6 @@ from django.contrib.auth.models import User
 def login(request):
     return render(request, 'login.html')
 
-def home(request):
-    return render(request, 'home.html')
-
-
 @login_required
 def post_login_redirect(request):
     if request.session.get('is_first_login', False):
@@ -23,7 +19,8 @@ def post_login_redirect(request):
 @login_required
 def home(request):
     profile = request.user.profile
-    return render(request, 'home.html', {'profile': profile})
+    users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')
+    return render(request, 'home.html', {'profile': profile, "users": users})
 
 @login_required
 def profile(request):
@@ -36,12 +33,12 @@ def profile(request):
             return redirect('/')  # Redirect to the homepage after updating the profile
     else:
         form = ProfileForm(instance=profile)
-
     return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 @login_required
 def campaign(request):
-    return render(request, 'campaign.html', {'campaignModel': campaign})
+    profile = request.user.profile
+    return render(request, 'campaign.html', {'campaignModel': campaign, 'profile': profile })
 
 @login_required
 def create_group(request):
