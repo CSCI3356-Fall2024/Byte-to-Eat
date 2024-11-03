@@ -14,7 +14,13 @@ urlpatterns = [
     path("", views.home, name='home'),
     path("profile/", views.profile, name='profile'),
     path("home/", views.home, name='home'),
-    path("campaign/", views.campaign, name='campaign')
+    path("campaign/", views.campaign, name='campaign'),
+    path('create_group/', views.create_group, name='create_group'),
+    path('group/<int:group_id>/', views.group_detail, name='group_detail'),
+    path('group/<int:group_id>/invite/', views.invite_to_group, name='invite_to_group'),
+    path('groups/', views.groups, name='groups'),
+    path('invitation/<int:invitation_id>/accept/', views.accept_invitation, name='accept_invitation'),
+    path('invitation/<int:invitation_id>/decline/', views.decline_invitation, name='decline_invitation'),
 ]
 
 if settings.DEBUG:

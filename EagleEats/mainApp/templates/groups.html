@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Your Group</h1>
+{% if user_group %}
+    <h2>{{ user_group.name }}</h2>
+    <p>Group Points: {{ user_group.points }}</p>
+    <p>Members:</p>
+    <ul>
+        {% for member in user_group.profile_set.all %}
+            <li>{{ member.user.username }}</li>
+        {% endfor %}
+    </ul>
+    {% if request.user == user_group.leader %}
+        <form method="post" action="{% url 'invite_to_group' user_group.id %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username to invite">
+            <button type="submit">Invite</button>
+        </form>
+    {% endif %}
+{% else %}
+    <p>You are not in a group.</p>
+    <a href="{% url 'create_group' %}">Create a New Group</a>
+    <h2>Invitations</h2>
+    <ul>
+        {% for invitation in invitations %}
+            <li>
+                {{ invitation.group.name }} - Invited by {{ invitation.invited_by.username }}
+                <a href="{% url 'accept_invitation' invitation.id %}">Accept</a>
+                <a href="{% url 'decline_invitation' invitation.id %}">Decline</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}
