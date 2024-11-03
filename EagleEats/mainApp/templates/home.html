@@ -1,53 +1,10 @@
 {% extends 'base.html' %} 
 {% block content %} 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .leaderboard-container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background-color: #789E4E;
-            color: #fff;
-            border-radius: 10px;
-        }
-        h1 {
-            text-align: left;
-        }
-        table {
-            width: 100%;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            font-size: 1.2em;
-            border-bottom: 2px solid #fff;
-        }
-        td {
-            border-bottom: 1px solid #ccc;
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome back, {% if user.first_name or user.last_name %}
-            {{ user.first_name }} {{ user.last_name }}
-        {% else %}
-            {{ user.username }}
-        {% endif %}!
-    </h1>
-    <div class="leaderboard-container">
-        <h2>Leaderboard</h2>
+
+<h1>Welcome back, {{ user.first_name }}!</h1>
+<div class="leaderboard-container">
+    <h2>Individual Leaderboard</h2>
+    <div class="table-container">
         <table>
             <thead>
                 <tr>
@@ -56,18 +13,63 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user in users %}
-                    {% if user.user_type == "student" %}
+                {% for u in users %}
+                    {% if u.user_type == "student" %}
                         <tr>
-                            <td>{{ forloop.counter }}) {{ user.first_name }} {{user.last_name}}</td>
-                            <td>{{ user.lifetime_points }}</td>
+                            <td>{{ forloop.counter }} {{ u.first_name }} {{ u.last_name }}</td>
+                            <td style="text-align: right;">{{ u.lifetime_points }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</body>
-</html>
+    <tr class="highlight">
+        <td>{{ profile.first_name }} {{ profile.last_name }}</td>
+        <td style="text-align: right;">{{ profile.lifetime_points }}</td>
+    </tr>
+</div>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    .leaderboard-container {
+        width: 100%;
+        padding: 20px;
+        background-color: #789E4E;
+        color: #fff;
+        border-radius: 10px;
+    }
+    .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #4e4e4e;
+    }
+    th {
+        font-size: 1.2em;
+        position: sticky;
+        top: 0;
+        background-color: #789E4E;
+        z-index: 1;
+    }
+    .highlight {
+        font-weight: bold;
+        background-color: #5a7d3c;
+    }
+    tr td:last-child {
+        text-align: right;
+    }
+</style>
 
 {% endblock %}
