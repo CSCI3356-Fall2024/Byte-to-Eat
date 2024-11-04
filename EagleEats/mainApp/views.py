@@ -19,13 +19,13 @@ def post_login_redirect(request):
     else:
         return redirect('/')
 
+
 @login_required
 def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
-    groups = Group.objects.all().order_by('-points')[:50]
-    campaigns = Campaign.objects.all().filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
-    return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups, "campaigns": campaigns})
+    groups = Group.objects.all().order_by('-total_points')[:50]
+    return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups})
 
 @login_required
 def profile(request):
