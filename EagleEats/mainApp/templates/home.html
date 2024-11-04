@@ -2,55 +2,98 @@
 {% block content %} 
 
 <h1>Welcome back, {{ user.first_name }}!</h1>
-<div class="leaderboard-container">
-    <h2>Individual Leaderboard</h2>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th style="text-align: right;">Lifetime Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for u in users %}
-                    {% if u.user_type == "student" %}
-                        <tr>
-                            <td>{{ forloop.counter }} ) {{ u.first_name }} {{ u.last_name }}</td>
-                            <td style="text-align: right;">{{ u.lifetime_points }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
+
+<div class="leaderboards-container">
+    <div class="leaderboard-container">
+        <h2 style="text-align: center;">Top Users</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr class="highlight">
+                        <th>Name</th>
+                        <th style="text-align: right;">Lifetime Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        {% if u.user == profile.user %}
+                            <tr class="highlight">
+                                <td>{{ forloop.counter }} ) {{ u.user.first_name }} {{ u.user.last_name }}</td>
+                                <td style="text-align: right;">{{ u.lifetime_points }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ forloop.counter }} ) {{ u.user.first_name }} {{ u.user.last_name }}</td>
+                                <td style="text-align: right;">{{ u.lifetime_points }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="highlight">
+                        <td style="text-align: left;">{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
+                        <td style="text-align: right;">{{ profile.lifetime_points }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
-    <tr class="highlight">
-        <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-        <td style="text-align: right;">{{ profile.lifetime_points }}</td>
-    </tr>
+
+    <div class="group-leaderboard-container">
+        <h2 style="text-align: center;">Top Groups</h2>
+        <div class="group-table-container">
+            <table>
+                <thead>
+                    <tr class="highlight">
+                        <th>Group Name</th>
+                        <th style="text-align: right;">Total Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for g in groups %}
+                        <tr>
+                            <td>{{ forloop.counter }} ) {{ g.name }}</td>
+                            <td style="text-align: right;">{{ g.total_points }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <style>
     body {
         font-family: Arial, sans-serif;
-        padding: 20px;
     }
     h1 {
         font-size: 2.5em;
     }
-    .leaderboard-container {
-        width: 100%;
+    .leaderboards-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    .leaderboard-container, .group-leaderboard-container {
+        flex: 1;
         padding: 20px;
         background-color: #789E4E;
         color: #fff;
         border-radius: 10px;
+        margin-bottom: 20px;
     }
-    .leaderboard-container h2 {
+    .leaderboard-container h2, .group-leaderboard-container h2 {
         font-size: 2em;
     }
-    .table-container {
+    .table-container, .group-table-container {
         max-height: 400px;
         overflow-y: auto;
+        position: relative;
+        padding-right: 10px; /* Add padding to move the scrollbar to the right */
+    }
+    .group-table-container {
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: nowrap; /* Prevent line breaks */
     }
     table {
         width: 100%;
@@ -60,7 +103,6 @@
     th, td {
         padding: 15px;
         text-align: left;
-        border-bottom: 1px solid #4e4e4e;
         font-size: 1.2em;
     }
     th {
@@ -70,13 +112,35 @@
         background-color: #789E4E;
         z-index: 1;
     }
-    .highlight {
+    tbody tr {
+        border-bottom: 1px solid #4e4e4e; /* Add horizontal line between rows */
+    }
+    .highlight td {
         font-weight: bold;
         background-color: #5a7d3c;
         font-size: 1.2em;
+        position: sticky;
+        bottom: 0;
+        border-radius: 5px;
     }
     tr td:last-child {
         text-align: right;
+    }
+    /* Custom scrollbar styles */
+    .table-container::-webkit-scrollbar, .group-table-container::-webkit-scrollbar {
+        width: 6px; /* Smaller width */
+        height: 6px; /* Smaller height for horizontal scrollbar */
+    }
+    .table-container::-webkit-scrollbar-track, .group-table-container::-webkit-scrollbar-track {
+        background: #789E4E;
+        border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb, .group-table-container::-webkit-scrollbar-thumb {
+        background: #5a7d3c;
+        border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover, .group-table-container::-webkit-scrollbar-thumb:hover {
+        background: #4e6b2f;
     }
 </style>
 

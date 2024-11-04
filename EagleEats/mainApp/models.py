@@ -2,6 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
+from django.utils import timezone
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=40)
+    member_limit = models.IntegerField(default=10)
+    points = models.IntegerField(default=0) #need to set this up later
+    leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.last_name
+
+    def can_add_member(self):
+        return self.profile_set.count() < self.member_limit
 
 class Group(models.Model):
     name = models.CharField(max_length=40)
@@ -29,8 +44,6 @@ class Profile(models.Model):
     graduation_year = models.IntegerField(blank=True, null=True)
     eagle_id = models.CharField(max_length=20, blank=True, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
-    first_name = models.CharField(max_length=100, blank=True)
-    last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=100, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     
@@ -93,8 +106,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=instance,
             email=instance.email,
-            first_name=instance.first_name,
-            last_name=instance.last_name,
             school=school_name
         )
 
@@ -110,3 +121,32 @@ class GroupInvitation(models.Model):
 
     def __str__(self):
         return f"Invite to {self.invitee.username} from {self.invited_by.username} for {self.group.name}"
+
+class GroupInvitation(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    invitee = models.ForeignKey(User, on_delete=models.CASCADE)
+    invited_by = models.ForeignKey(User, related_name='sent_invitations', on_delete=models.CASCADE)
+    accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Invite to {self.invitee.username} from {self.invited_by.username} for {self.group.name}"
+
+# Automatically generate campaign ID
+@receiver(pre_save, sender=Campaign)
+def set_campaign_id(sender, instance, **kwargs):
+    if not instance.campaign_id:  # Only set ID if it doesn't exist
+        last_campaign = Campaign.objects.order_by('-campaign_id').first()
+        instance.campaign_id = f'C{int(last_campaign.campaign_id[1:]) + 1 if last_campaign else 1:04d}'
+
+# Automatically generate transaction ID and check campaign status
+@receiver(pre_save, sender=Transaction)
+def set_transaction_id_and_validate(sender, instance, **kwargs):
+    # Set transaction ID
+    if not instance.transaction_id:
+        last_transaction = Transaction.objects.order_by('-transaction_id').first()
+        instance.transaction_id = f'T{int(last_transaction.transaction_id[1:]) + 1 if last_transaction else 1:04d}'
+    
+    # Validate campaign is active
+    today = timezone.now()
+    if not (instance.campaign.start_date <= today <= instance.campaign.end_date):
+        raise ValueError("Cannot assign transactions to inactive campaigns.")

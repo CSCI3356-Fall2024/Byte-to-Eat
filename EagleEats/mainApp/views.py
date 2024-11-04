@@ -1,5 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from .models import Profile, Campaign, Transaction, Group
+from django.shortcuts import redirect
+from .forms import ProfileForm
+from django.utils import timezone
+from .forms import TransactionForm, CampaignForm 
 from .forms import ProfileForm, GroupForm
 from .models import Group, Profile, GroupInvitation
 from django.contrib.auth.models import User 
@@ -15,12 +20,13 @@ def post_login_redirect(request):
     else:
         return redirect('/')
 
-
 @login_required
 def home(request):
     profile = request.user.profile
-    users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')
-    return render(request, 'home.html', {'profile': profile, "users": users})
+    users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
+    groups = Group.objects.all().order_by('-points')[:50]
+    campaigns = Campaign.objects.all().filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
+    return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups, "campaigns": campaigns})
 
 @login_required
 def profile(request):
@@ -36,9 +42,44 @@ def profile(request):
     return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 @login_required
-def campaign(request):
+def campaigns(request):
     profile = request.user.profile
-    return render(request, 'campaign.html', {'campaignModel': campaign, 'profile': profile })
+
+    # Get campaigns based on active/inactive status
+    today = timezone.now()
+    active_campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
+    inactive_campaigns = Campaign.objects.filter(end_date__lt=today)
+
+    # Instantiate forms
+    transaction_form = TransactionForm()
+    campaign_form = CampaignForm()
+
+    # Check if request method is POST to process form submissions
+    if request.method == 'POST':
+        if 'transaction_form' in request.POST:
+            # Handle transaction form submission
+            transaction_form = TransactionForm(request.POST)
+            if transaction_form.is_valid():
+                transaction_form.save()
+                return redirect('campaigns')  # Reload the page to show updated data
+
+        elif 'save_campaign' in request.POST:
+            # Handle campaign form submission
+            campaign_form = CampaignForm(request.POST, request.FILES)
+            if campaign_form.is_valid():
+                campaign_form.save()
+                return redirect('campaigns')  # Reload the page to show the new campaign
+
+    # Render the forms and campaign data
+    context = {
+        'profile': profile,
+        'active_campaigns': active_campaigns,
+        'inactive_campaigns': inactive_campaigns,
+        'transaction_form': transaction_form,
+        'campaign_form': campaign_form,
+    }
+    return render(request, 'campaign.html', context)
+
 
 @login_required
 def create_group(request):
@@ -105,4 +146,4 @@ def groups(request):
     profile = request.user.profile
     user_group = profile.group
     invitations = GroupInvitation.objects.filter(invitee=request.user, accepted=False)
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations})
+    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile})
