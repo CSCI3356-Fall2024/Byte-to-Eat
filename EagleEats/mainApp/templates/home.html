@@ -51,12 +51,25 @@
                 </thead>
                 <tbody>
                     {% for g in groups %}
-                        <tr>
-                            <td>{{ forloop.counter }} ) {{ g.name }}</td>
-                            <td style="text-align: right;">{{ g.points }}</td>
-                        </tr>
+                        {% if g == profile.group %}
+                            <tr class="highlight">
+                                <td>{{ forloop.counter }} ) {{ g.name }}</td>
+                                <td style="text-align: right;">{{ g.points }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ forloop.counter }} ) {{ g.name }}</td>
+                                <td style="text-align: right;">{{ g.points }}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
+                <tfoot>
+                    <tr class="highlight">
+                        <td style="text-align: left;">{{ profile.group.name }}</td>
+                        <td style="text-align: right;">{{ profile.group.points }}</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
