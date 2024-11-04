@@ -47,6 +47,7 @@ class Campaign(models.Model):
         ('action', 'Action'),
         ('redeem', 'Redeem')
     ]
+    
     campaign_picture = models.ImageField(upload_to='campaign_pictures/', null=True, blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
