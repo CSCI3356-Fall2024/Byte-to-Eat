@@ -45,7 +45,7 @@ class Profile(models.Model):
     eagle_id = models.CharField(max_length=20, blank=True, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
     email = models.EmailField(max_length=100, blank=True)
-    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
+    group_id = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     
     # Point-related fields
     lifetime_points = models.IntegerField(default=0)
