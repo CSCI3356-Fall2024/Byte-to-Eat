@@ -1,4 +1,4 @@
-# copy code below, on a terminal run python manage.py shell, paste code below to generate test users
+# delete db.sqlite3, delete all files in migration under mainApp other than pycache and __init__ copy code below, on a terminal run python manage.py shell, paste code below to generate test users
 import random
 from mainApp.models import Profile, Group
 from django.contrib.auth.models import User
