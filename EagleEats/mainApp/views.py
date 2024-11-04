@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Campaign, Transaction
+from .models import Profile, Campaign, Transaction, Group
 from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
@@ -20,13 +20,13 @@ def post_login_redirect(request):
     else:
         return redirect('/')
 
-
 @login_required
 def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
+    groups = Group.objects.all().order_by('-total_points')[:50]
     campaigns = Campaign.objects.all().filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
-    return render(request, 'home.html', {'profile': profile, "users": users, "campaign": campaigns})
+    return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups, "campaign": campaigns})
 
 @login_required
 def profile(request):

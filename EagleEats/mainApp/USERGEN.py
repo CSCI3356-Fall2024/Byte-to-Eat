@@ -1,5 +1,6 @@
+# copy code below, on a terminal run python manage.py shell, paste code below to generate test users
 import random
-from mainApp.models import Profile 
+from mainApp.models import Profile, Group
 from django.contrib.auth.models import User
 users = [
     {"first_name": "Bill", "last_name": "Clark", "points": 31483},
@@ -121,7 +122,25 @@ for user_data in users:
         }
     )
 
-for u in Profile.objects.all():
-    u.lifetime_points = random.randint(1000, 10000)
-    u.current_points = random.randint(u.lifetime_points, u.lifetime_points+10000)
-    u.save()
+# Generate 20 random groups
+group_names = [
+    "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta", "Iota", "Kappa",
+    "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi", "Rho", "Sigma", "Tau", "Upsilon"
+]
+
+groups = []
+for name in group_names:
+    leader = random.choice(User.objects.all())
+    group = Group.objects.create(name=name, leader=leader)
+    groups.append(group)
+
+for user in User.objects.all():
+    profile = Profile.objects.get(user=user)
+    group = random.choice(groups)
+    profile.group = group
+    profile.save()
+
+for profile in Profile.objects.all():
+    profile.lifetime_points = random.randint(1000, 10000)
+    profile.current_points = random.randint(profile.lifetime_points, profile.lifetime_points + 10000)
+    profile.save()
