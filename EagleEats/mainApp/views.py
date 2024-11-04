@@ -27,8 +27,6 @@ def home(request):
     groups = Group.objects.all().order_by('-points')[:50]
     campaigns = Campaign.objects.all().filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
     return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups, "campaigns": campaigns})
-    campaigns = Campaign.objects.all().filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
-    return render(request, 'home.html', {'profile': profile, "users": users, "campaign": campaigns})
 
 @login_required
 def profile(request):
