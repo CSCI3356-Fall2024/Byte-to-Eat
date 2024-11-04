@@ -145,4 +145,4 @@ def groups(request):
     profile = request.user.profile
     user_group = profile.group
     invitations = GroupInvitation.objects.filter(invitee=request.user, accepted=False)
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations})
+    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile})
