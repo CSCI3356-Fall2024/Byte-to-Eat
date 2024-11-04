@@ -4,31 +4,31 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
 from django.utils import timezone
+import uuid
 
 
 class Group(models.Model):
     name = models.CharField(max_length=40)
     member_limit = models.IntegerField(default=10)
-    points = models.IntegerField(default=0) #need to set this up later
-    leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
+    earned_points = models.IntegerField(default=0)
+    points = models.IntegerField(default=0) #total points
+    group_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    members = models.ManyToManyField(User, related_name='member_list', through='GroupMembership')
+    leader = models.ForeignKey(User, related_name='led_groups', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return self.last_name
+        return self.name 
 
     def can_add_member(self):
         return self.profile_set.count() < self.member_limit
 
-class Group(models.Model):
-    name = models.CharField(max_length=40)
-    member_limit = models.IntegerField(default=10)
-    points = models.IntegerField(default=0) #need to set this up later
-    leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
+    def update_points(self):
+        total_points = self.earned_points
+        for member in self.members.all():
+            total_points += member.profile.lifetime_points
+        self.points = total_points
+        self.save()
 
-    def __str__(self):
-        return self.last_name
-
-    def can_add_member(self):
-        return self.profile_set.count() < self.member_limit
 
 class Profile(models.Model):
     USER_TYPES = [
@@ -46,13 +46,39 @@ class Profile(models.Model):
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
     email = models.EmailField(max_length=100, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
     # Point-related fields
     lifetime_points = models.IntegerField(default=0)
     current_points = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username
+
+class GroupMembership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    is_leader = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} in {self.group.name}"
+
+
+#when to update the group's total points
+@receiver(post_save, sender=Profile)
+def update_group_points_on_profile_save(sender, instance, **kwargs):
+    if instance.group:
+        instance.group.update_points()
+
+@receiver(post_save, sender=GroupMembership)
+def update_group_points_on_membership_save(sender, instance, **kwargs):
+    instance.group.update_points()
+
+@receiver(models.signals.post_delete, sender=GroupMembership)
+def update_group_points_on_membership_delete(sender, instance, **kwargs):
+    instance.group.update_points()
+    
+
 
 class Campaign(models.Model):
     CAMPAIGN_TYPE_CHOICES = [
@@ -112,15 +138,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-
-class GroupInvitation(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    invitee = models.ForeignKey(User, on_delete=models.CASCADE)
-    invited_by = models.ForeignKey(User, related_name='sent_invitations', on_delete=models.CASCADE)
-    accepted = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Invite to {self.invitee.username} from {self.invited_by.username} for {self.group.name}"
 
 class GroupInvitation(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)

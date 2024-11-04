@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Campaign, Transaction
+from .models import Profile, Campaign, Transaction, Group, GroupMembership, GroupInvitation
 from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
 from .forms import TransactionForm, CampaignForm 
 from .forms import ProfileForm, GroupForm
-from .models import Group, Profile, GroupInvitation
 from django.contrib.auth.models import User 
 
 # Create your views here.
@@ -89,10 +88,12 @@ def create_group(request):
             group = form.save(commit=False)
             group.leader = request.user
             group.save()
+            GroupMembership.objects.create(user=request.user, group=group, is_leader=True)
+            # Update the user's profile with the new group
             profile = request.user.profile
             profile.group = group
             profile.save()
-            return redirect('group_detail', group_id=group.id)
+            return redirect('groups')
     else:
         form = GroupForm()
     return render(request, 'create_group.html', {'form': form})
@@ -107,15 +108,10 @@ def invite_to_group(request, group_id):
         profile = user.profile 
         if profile.group is None and group.can_add_member():
             GroupInvitation.objects.create(group=group, invitee=user, invited_by=request.user)
-            return redirect('group_detail', group_id=group.id)
+            return redirect('groups')
         else:
             return render(request, 'group_detail.html', {'group': group, 'error': 'User is already in a group or group member limit reached'})
 
-    return render(request, 'group_detail.html', {'group': group})
-
-@login_required
-def group_detail(request, group_id):
-    group = get_object_or_404(Group, id=group_id)
     return render(request, 'group_detail.html', {'group': group})
 
 @login_required
@@ -125,6 +121,7 @@ def accept_invitation(request, invitation_id):
         profile = request.user.profile
         profile.group = invitation.group
         profile.save()
+        GroupMembership.objects.create(user=request.user, group=invitation.group)
         invitation.accepted = True
         invitation.save()
     return redirect('groups')
@@ -137,13 +134,32 @@ def decline_invitation(request, invitation_id):
     return redirect('groups')
 
 @login_required
-def group_detail(request, group_id):
+def leave_group(request, group_id):
     group = get_object_or_404(Group, id=group_id)
-    return render(request, 'group_detail.html', {'group': group})
+    membership = get_object_or_404(GroupMembership, user=request.user, group=group)
+    if membership.is_leader:
+        return render(request, 'group_detail.html', {'group': group, 'error': 'Leader cannot leave the group. Please delete the group or assign a new leader first.'})
+    else:
+        membership.delete()
+        profile = request.user.profile
+        profile.group = None
+        profile.save()
+        return redirect('groups')
+
+@login_required
+def delete_group(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    membership = get_object_or_404(GroupMembership, user=request.user, group=group, is_leader=True)
+    if membership:
+        group.delete()
+        return redirect('groups')
+    else:
+        return render(request, 'group_detail.html', {'group': group, 'error': 'Only the group leader can delete the group.'})
 
 @login_required
 def groups(request):
     profile = request.user.profile
     user_group = profile.group
     invitations = GroupInvitation.objects.filter(invitee=request.user, accepted=False)
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile})
+    is_leader = GroupMembership.objects.filter(user=request.user, group=user_group, is_leader=True).exists() if user_group else False
+    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader})

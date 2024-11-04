@@ -9,26 +9,38 @@
             <h4>{{ user_group.name }}</h4>
         </div>
         <div class="member-box">
-            <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader) </small></span>
-            <span class="points"> pts </span>
+            <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader)</small></span>
+            <span class="points">{{ user_group.leader.profile.lifetime_points }} pts</span>
         </div>
-        {% for member in user_group.profile_set.all %}
-            {% if member.user != user_group.leader %}
-            <div class="member-box">
-                <body>{{ member.user.first_name }} {{ member.user.last_name }}</body>
-            </div>    
-            {% endif %} 
-        {% endfor %}
+        {% for member in user_group.members.all %}
+            {% if member != user_group.leader %}
+                <div class="member-box">
+                    <span>{{ member.first_name }} {{ member.last_name }}</span>
+                    <span class="points">{{ member.profile.lifetime_points }} pts</span>
+                </div>
+            {% endif %}
+        {% endfor %}        
         <div class="invite-field">
-            {% if request.user == user_group.leader %}
+            {% if is_leader %}
                 <form method="post" action="{% url 'invite_to_group' user_group.id %}">
                     {% csrf_token %}
                     <input type="text" name="username" placeholder="Username to invite">
                     <button type="submit">Invite</button>
                 </form>
+                <form method="post" action="{% url 'delete_group' user_group.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete Group</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'leave_group' user_group.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Leave Group</button>
+                </form>
             {% endif %}
         </div>
     </div>
+
+<!-- NOT IN GROUP -->
 {% else %}
     <p>You are not in a group.</p>
     <a href="{% url 'create_group' %}">Create a New Group</a>
