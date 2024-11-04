@@ -15,7 +15,6 @@ def post_login_redirect(request):
     else:
         return redirect('/')
 
-
 @login_required
 def home(request):
     profile = request.user.profile

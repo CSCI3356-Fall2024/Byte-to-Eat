@@ -2,6 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
+from django.utils import timezone
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=40)
+    member_limit = models.IntegerField(default=10)
+    points = models.IntegerField(default=0) #need to set this up later
+    leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.last_name
+
+    def can_add_member(self):
+        return self.profile_set.count() < self.member_limit
 
 class Profile(models.Model):
     USER_TYPES = [
@@ -32,6 +47,7 @@ class Campaign(models.Model):
         ('action', 'Action'),
         ('redeem', 'Redeem')
     ]
+    
     campaign_picture = models.ImageField(upload_to='campaign_pictures/', null=True, blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
