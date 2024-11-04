@@ -1,4 +1,5 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+{% load static %} 
 {% block content %} 
 
 <h1>Welcome back, {{ user.first_name }}!</h1>
@@ -73,6 +74,52 @@
             </table>
         </div>
     </div>
+</div>
+
+<h2 class="section-title">Active Challenges</h2>
+<div class="challenges-container">
+    {% for action in active_actions %}
+    <div class="challenge-card">
+        {% if action.campaign_picture %}
+            <img src="{{ action.campaign_picture.url }}" alt="{{ action.title }}" class="challenge-image">
+        {% else %}
+            <img src="{% static 'img/eagle.png' %}" alt="Default Action Image" class="challenge-image">
+        {% endif %}
+        <div class="challenge-info">
+            <h3>{{ action.title }}</h3>
+            <p class="challenge-description">{{ action.description }}</p>
+            <p class="points">{{ action.individual_points }} pts</p>
+        </div>
+    </div>
+    {% endfor %}
+    <a href="{% url 'actions' %}" class="view-all-card">
+        <div class="view-all-content">
+            <h3>View All Challenges</h3>
+        </div>
+    </a>
+</div>
+
+<h2 class="section-title">Rewards</h2>
+<div class="rewards-container">
+    {% for reward in active_rewards %}
+    <div class="reward-card">
+        {% if reward.campaign_picture %}
+            <img src="{{ reward.campaign_picture.url }}" alt="{{ reward.title }}" class="reward-image">
+        {% else %}
+            <img src="{% static 'img/eagle.png' %}" alt="Default Reward Image" class="reward-image">
+        {% endif %}
+        <div class="reward-info">
+            <h3>{{ reward.title }}</h3>
+            <p class="reward-description">{{ reward.description }}</p>
+            <p class="points">{{ reward.individual_points }} pts</p>
+        </div>
+    </div>
+    {% endfor %}
+    <a href="{% url 'rewards' %}" class="view-all-card">
+        <div class="view-all-content">
+            <h3>View All Rewards</h3>
+        </div>
+    </a>
 </div>
 
 <style>

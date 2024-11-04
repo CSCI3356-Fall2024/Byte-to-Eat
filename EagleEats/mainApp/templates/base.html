@@ -168,10 +168,10 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav justify-content-center w-100">
           <li class="nav-item">
-            <a class="nav-link" href="#">Rewards</a>
+            <a class="nav-link" href="{% url 'rewards' %}">Rewards</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Actions</a>
+            <a class="nav-link" href="{% url 'actions' %}">Actions</a>
           </li>
           {% if profile.user_type == 'admin' or profile.user_type == 'mod' %}
           <li class="nav-item {% if request.resolver_match.url_name == 'campaign' %}active{% endif %}">

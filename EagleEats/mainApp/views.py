@@ -25,7 +25,32 @@ def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
     groups = Group.objects.all().order_by('-points')[:50]
-    return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups})
+
+    # Get active campaigns for display on home page
+    today = timezone.now()
+    
+    # Get active challenges/actions
+    active_actions = Campaign.objects.filter(
+        campaign_type='action',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')[:3]  # Limit to 3 most recent actions
+
+    # Get active rewards
+    active_rewards = Campaign.objects.filter(
+        campaign_type='redeem',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')[:5]  # Limit to 5 most recent rewards
+
+    context = {
+        'profile': profile,
+        'users': users,
+        'groups': groups,
+        'active_actions': active_actions,
+        'active_rewards': active_rewards,
+    }
+    return render(request, 'home.html', context)
 
 @login_required
 def profile(request):
@@ -45,16 +70,16 @@ def actions(request):
     profile = request.user.profile
     today = timezone.now()
     
-    # # Get active challenges
-    # active_campaigns = Campaign.objects.filter(
-    #     campaign_type='action',
-    #     start_date__lte=today,
-    #     end_date__gte=today
-    # ).order_by('-start_date')
+    # Get active challenges
+    active_campaigns = Campaign.objects.filter(
+        campaign_type='action',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')
 
     context = {
         'profile': profile,
-        # 'active_campaigns': active_campaigns,
+        'active_campaigns': active_campaigns,
     }
     return render(request, 'actions.html', context)
 
@@ -63,16 +88,16 @@ def rewards(request):
     profile = request.user.profile
     today = timezone.now()
     
-    # # Get available rewards
-    # available_rewards = Campaign.objects.filter(
-    #     campaign_type='redeem',
-    #     start_date__lte=today,
-    #     end_date__gte=today
-    # ).order_by('-start_date')
+    # Get available rewards
+    available_rewards = Campaign.objects.filter(
+        campaign_type='redeem',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')
 
     context = {
         'profile': profile,
-        # 'available_rewards': available_rewards,
+        'available_rewards': available_rewards,
     }
     return render(request, 'rewards.html', context)
 
