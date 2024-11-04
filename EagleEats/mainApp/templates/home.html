@@ -85,10 +85,9 @@
         {% else %}
             <img src="{% static 'img/eagle.png' %}" alt="Default Action Image" class="challenge-image">
         {% endif %}
-        <div class="challenge-info">
-            <h3>{{ action.title }}</h3>
-            <p class="challenge-description">{{ action.description }}</p>
-            <p class="points">{{ action.individual_points }} pts</p>
+        <div class="card-overlay">
+            <h3 class="card-title">{{ action.title }}</h3>
+            <p class="card-points">{{ action.individual_points }} pts</p>
         </div>
     </div>
     {% endfor %}
@@ -108,10 +107,9 @@
         {% else %}
             <img src="{% static 'img/eagle.png' %}" alt="Default Reward Image" class="reward-image">
         {% endif %}
-        <div class="reward-info">
-            <h3>{{ reward.title }}</h3>
-            <p class="reward-description">{{ reward.description }}</p>
-            <p class="points">{{ reward.individual_points }} pts</p>
+        <div class="card-overlay">
+            <h3 class="card-title">{{ reward.title }}</h3>
+            <p class="card-points">{{ reward.individual_points }} pts</p>
         </div>
     </div>
     {% endfor %}
@@ -201,6 +199,148 @@
     }
     .table-container::-webkit-scrollbar-thumb:hover, .group-table-container::-webkit-scrollbar-thumb:hover {
         background: #4e6b2f;
+    }
+
+    /* Scroll containers */
+    .challenges-scroll-container,
+    .rewards-scroll-container {
+        width: 100%;
+        height: 300px; /* Fixed height for scroll container */
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 20px;
+        margin-bottom: 40px;
+    }
+
+    /* Scrollbar styling */
+    .challenges-scroll-container::-webkit-scrollbar,
+    .rewards-scroll-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .challenges-scroll-container::-webkit-scrollbar-track,
+    .rewards-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .challenges-scroll-container::-webkit-scrollbar-thumb,
+    .rewards-scroll-container::-webkit-scrollbar-thumb {
+        background: #789E4E;
+        border-radius: 4px;
+    }
+
+    .challenges-scroll-container::-webkit-scrollbar-thumb:hover,
+    .rewards-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #5a7d3c;
+    }
+
+    /* Container styles */
+    .challenges-container,
+    .rewards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 250px); /* Fixed width cards */
+        gap: 20px;
+        padding-right: 20px; /* Space for scrollbar */
+    }
+
+    /* Card styles */
+    .challenge-card,
+    .reward-card,
+    .view-all-card {
+        width: 250px; /* Fixed width */
+        height: 250px; /* Fixed height */
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+        position: relative;
+    }
+
+    .card-image-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .challenge-image,
+    .reward-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: filter 0.3s;
+    }
+
+    /* Overlay effect */
+    .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 15px;
+        color: white;
+    }
+
+    .card-title {
+        margin: 0;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-points {
+        margin: 5px 0 0;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #a4d65e;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    /* View all card */
+    .view-all-card {
+        background: #789E4E;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .view-all-card:hover {
+        transform: translateY(-5px);
+        background: #8bc34a;
+    }
+
+    .view-all-content h3 {
+        margin: 0;
+        color: white;
+        font-size: 1.5em;
+    }
+
+    /* Hover effects */
+    .challenge-card:hover,
+    .reward-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .challenge-card:hover .challenge-image,
+    .reward-card:hover .reward-image {
+        filter: brightness(0.7);
+    }
+
+    /* Section titles */
+    .section-title {
+        color: #000000;
+        font-size: 2em;
+        margin: 30px 0 20px;
     }
 </style>
 
