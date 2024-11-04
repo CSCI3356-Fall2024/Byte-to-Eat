@@ -9,6 +9,9 @@ from .forms import ProfileForm, GroupForm
 from django.contrib.auth.models import User 
 from django.http import HttpResponseForbidden
 from functools import wraps
+from django.contrib import messages
+from django.http import JsonResponse
+
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -152,6 +155,38 @@ def campaigns(request):
     }
     return render(request, 'campaign.html', context)
 
+@login_required
+@admin_required
+def edit_campaign(request, campaign_id):
+    campaign = get_object_or_404(Campaign, id=campaign_id)
+
+    if request.method == 'POST':
+        if 'save_campaign' in request.POST:
+            form = CampaignForm(request.POST, request.FILES, instance=campaign)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Campaign updated successfully.')
+                return redirect('campaigns')
+        
+        elif 'delete_campaign' in request.POST:
+            campaign.delete()
+            messages.success(request, 'Campaign deleted successfully.')
+            return redirect('campaigns')
+
+    elif request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Handle AJAX request for campaign data
+        campaign_data = {
+            'title': campaign.title,
+            'start_date': campaign.start_date.strftime('%Y-%m-%d'),
+            'end_date': campaign.end_date.strftime('%Y-%m-%d'),
+            # Include other fields as necessary
+        }
+        return JsonResponse(campaign_data)
+
+    else:
+        form = CampaignForm(instance=campaign)
+
+    return render(request, 'campaign_modal.html', {'form': form, 'campaign': campaign})
 
 @login_required
 def create_group(request):

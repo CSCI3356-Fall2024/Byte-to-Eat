@@ -24,6 +24,8 @@ urlpatterns = [
     path('invitation/<int:invitation_id>/decline/', views.decline_invitation, name='decline_invitation'),
     path('group/<int:group_id>/leave/', views.leave_group, name='leave_group'),
     path('group/<int:group_id>/delete/', views.delete_group, name='delete_group'),
+    path('campaigns/edit/<int:campaign_id>/', views.edit_campaign, name='edit_campaign'),
+
 ]
 
 if settings.DEBUG:
