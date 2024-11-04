@@ -13,7 +13,7 @@ class Group(models.Model):
     leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.last_name
+        return self.name
 
     def can_add_member(self):
         return self.profile_set.count() < self.member_limit

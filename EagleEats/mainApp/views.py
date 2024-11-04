@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Profile
+from .models import Profile, Group
 from django.shortcuts import redirect
 from .forms import ProfileForm
 
@@ -19,7 +19,8 @@ def post_login_redirect(request):
 def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
-    return render(request, 'home.html', {'profile': profile, "users": users})
+    groups = Group.objects.all().order_by('-points')[:50]
+    return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups})
 
 @login_required
 def profile(request):
