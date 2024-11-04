@@ -8,7 +8,7 @@ from django.utils import timezone
 class Group(models.Model):
     name = models.CharField(max_length=40)
     member_limit = models.IntegerField(default=10)
-    earned_points = models.IntergerField(default=0) #earned through weekly challenges
+    earned_points = models.IntegerField(default=0) #earned through weekly challenges
     total_points = models.IntegerField(default=0) #total
     leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
 
