@@ -41,6 +41,42 @@ def profile(request):
     return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 @login_required
+def actions(request):
+    profile = request.user.profile
+    today = timezone.now()
+    
+    # Get active actions/challenges
+    active_campaigns = Campaign.objects.filter(
+        campaign_type='action',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')
+
+    context = {
+        'profile': profile,
+        'active_campaigns': active_campaigns,
+    }
+    return render(request, 'actions.html', context)
+
+@login_required
+def rewards(request):
+    profile = request.user.profile
+    today = timezone.now()
+    
+    # Get available rewards
+    available_rewards = Campaign.objects.filter(
+        campaign_type='redeem',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')
+
+    context = {
+        'profile': profile,
+        'available_rewards': available_rewards,
+    }
+    return render(request, 'rewards.html', context)
+
+@login_required
 def campaigns(request):
     profile = request.user.profile
 
