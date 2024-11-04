@@ -24,7 +24,7 @@ def post_login_redirect(request):
 def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
-    groups = Group.objects.all().order_by('-points')[:50]
+    groups = Group.objects.all().order_by('-total_points')[:50]
     return render(request, 'home.html', {'profile': profile, "users": users, "groups": groups})
 
 @login_required

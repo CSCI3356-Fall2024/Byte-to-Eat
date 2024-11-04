@@ -1,6 +1,6 @@
 # copy code below, on a terminal run python manage.py shell, paste code below to generate test users
 import random
-from mainApp.models import Profile 
+from mainApp.models import Profile, Group
 from django.contrib.auth.models import User
 users = [
     {"first_name": "Bill", "last_name": "Clark", "points": 31483},
@@ -121,10 +121,6 @@ for user_data in users:
             'current_points': points
         }
     )
-
-import random
-from django.contrib.auth.models import User
-from mainApp.models import Profile, Group
 
 # Generate 20 random groups
 group_names = [
