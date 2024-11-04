@@ -172,21 +172,26 @@
 
 <script>
     function loadCampaignData(campaignId) {
-        // Fetch campaign data from the server
-        fetch(`/edit-campaign/${campaignId}/`)
-            .then(response => response.json())
-            .then(data => {
-                // Populate the edit form fields
-                document.querySelector('#editCampaignForm [name="title"]').value = data.title;
-                document.querySelector('#editCampaignForm [name="start_date"]').value = data.start_date;
-                document.querySelector('#editCampaignForm [name="end_date"]').value = data.end_date;
-                // Add other fields as needed
+    campaignId = parseInt(campaignId, 10); // Convert to integer if needed
 
-                // Set the form action to submit to the edit view
-                document.querySelector('#editCampaignForm').action = `/edit-campaign/${campaignId}/`;
-            })
-            .catch(error => console.error('Error loading campaign data:', error));
-    }
+    fetch(`/edit-campaign/${campaignId}/`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Log data to verify the response
+            document.querySelector('#editCampaignForm [name="title"]').value = data.title;
+            document.querySelector('#editCampaignForm [name="description"]').value = data.description;
+            document.querySelector('#editCampaignForm [name="start_date"]').value = data.start_date;
+            document.querySelector('#editCampaignForm [name="end_date"]').value = data.end_date;
+            document.querySelector('#editCampaignForm [name="individual_points"]').value = data.individual_points;
+            document.querySelector('#editCampaignForm [name="group_points"]').value = data.group_points;
+            document.querySelector('#editCampaignForm [name="campaign_type"]').value = data.campaign_type;
+            document.querySelector('#editCampaignForm [name="campaign_id"]').value = data.campaign_id;
+            // Update the form action URL
+            document.querySelector('#editCampaignForm').action = `/edit-campaign/${campaignId}/`;
+        })
+        .catch(error => console.error('Error loading campaign data:', error));
+}
+
 </script>
 
 {% endblock %}
