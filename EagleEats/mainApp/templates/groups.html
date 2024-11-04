@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Your Group</h1>
+{% if user_group %}
+    <div class="group-border">
+        <div class="group-info">
+            <h3 style="text-align: right;"><b>{{ user_group.total_points }} pts</b></h3>
+            <h4>{{ user_group.name }}</h4>
+        </div>
+        <div class="member-box">
+            <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader) </small></span>
+            <span class="points"> pts {{ user_group.leader.lifetime_points }} </span>
+        </div>
+        {% for member in user_group.profile_set.all %}
+            {% if member.user != user_group.leader %}
+            <div class="member-box">
+                <body>{{ member.user.first_name }} {{ member.user.last_name }}   {{ member.lifetime_points }} pts</body>
+            </div>    
+            {% endif %} 
+        {% endfor %}
+        <div class="invite-field">
+            {% if request.user == user_group.leader %}
+                <form method="post" action="{% url 'invite_to_group' user_group.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username to invite">
+                    <button type="submit">Invite</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    <p>You are not in a group.</p>
+    <a href="{% url 'create_group' %}">Create a New Group</a>
+    <h2>Invitations</h2>
+    <ul>
+        {% for invitation in invitations %}
+            <li>
+                {{ invitation.group.name }} - Invited by {{ invitation.invited_by.username }}
+                <a href="{% url 'accept_invitation' invitation.id %}">Accept</a>
+                <a href="{% url 'decline_invitation' invitation.id %}">Decline</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    .group-border {
+        width: 100%;
+        padding: 20px;
+        background-color: #789E4E;
+        border-radius: 10px;
+    }
+    .group-info {
+        width: 100%;
+        padding: 20px;
+        background-color: #E6E5E3;
+        color: #000000;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .member-title {
+        width: 30%;
+        padding: 10px;
+        background-color: #b8db15;
+        color: #000000;
+        border-radius: 10px;
+    }
+    .member-box {
+        width: 100%;
+        padding: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: #E6E5E3;
+        color: #000000;
+        border-radius: 10px;
+        margin-bottom: 7px;
+    }
+    .invite-field {
+        margin-top: 20px;
+    }
+    .points {
+        text-align: right;
+    }
+
+</style>
+
+{% endblock %}
