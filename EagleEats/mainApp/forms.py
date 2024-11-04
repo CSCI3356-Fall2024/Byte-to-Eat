@@ -25,10 +25,11 @@ class CampaignForm(forms.ModelForm):
         model = Campaign
         fields = ['campaign_picture', 'title', 'description', 'start_date', 'end_date', 'individual_points', 'group_points', 'campaign_type']
         widgets = {
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'resize: none;', 'rows': 3}),
             'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
             'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         }
-
+        
 class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
