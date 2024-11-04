@@ -5,17 +5,17 @@
 {% if user_group %}
     <div class="group-border">
         <div class="group-info">
-            <h3 style="text-align: right;"><b>{{ user_group.total_points }} pts</b></h3>
+            <h3 style="text-align: right;"><b>{{ user_group.points }} pts</b></h3>
             <h4>{{ user_group.name }}</h4>
         </div>
         <div class="member-box">
             <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader) </small></span>
-            <span class="points"> pts {{ user_group.leader.lifetime_points }} </span>
+            <span class="points"> pts </span>
         </div>
         {% for member in user_group.profile_set.all %}
             {% if member.user != user_group.leader %}
             <div class="member-box">
-                <body>{{ member.user.first_name }} {{ member.user.last_name }}   {{ member.lifetime_points }} pts</body>
+                <body>{{ member.user.first_name }} {{ member.user.last_name }}</body>
             </div>    
             {% endif %} 
         {% endfor %}

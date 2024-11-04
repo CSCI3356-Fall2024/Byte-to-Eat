@@ -5,11 +5,23 @@ from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
 from django.utils import timezone
 
+
 class Group(models.Model):
     name = models.CharField(max_length=40)
     member_limit = models.IntegerField(default=10)
-    earned_points = models.IntegerField(default=0) #earned through weekly challenges
-    total_points = models.IntegerField(default=0) #total
+    points = models.IntegerField(default=0) #need to set this up later
+    leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.last_name
+
+    def can_add_member(self):
+        return self.profile_set.count() < self.member_limit
+
+class Group(models.Model):
+    name = models.CharField(max_length=40)
+    member_limit = models.IntegerField(default=10)
+    points = models.IntegerField(default=0) #need to set this up later
     leader = models.ForeignKey(User, related_name= 'led_groups', on_delete=models.CASCADE)
 
     def __str__(self):

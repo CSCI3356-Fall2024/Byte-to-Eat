@@ -25,7 +25,8 @@ def post_login_redirect(request):
 def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
-    return render(request, 'home.html', {'profile': profile, "users": users})
+    campaigns = Campaign.objects.all().filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
+    return render(request, 'home.html', {'profile': profile, "users": users, "campaign": campaigns})
 
 @login_required
 def profile(request):
