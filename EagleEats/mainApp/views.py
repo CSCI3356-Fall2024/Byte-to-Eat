@@ -41,7 +41,7 @@ def profile(request):
     return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 @login_required
-def campaign(request):
+def campaigns(request):
     profile = request.user.profile
 
     # Get campaigns based on active/inactive status
@@ -60,14 +60,14 @@ def campaign(request):
             transaction_form = TransactionForm(request.POST)
             if transaction_form.is_valid():
                 transaction_form.save()
-                return redirect('campaign')  # Reload the page to show updated data
+                return redirect('campaigns')  # Reload the page to show updated data
 
         elif 'save_campaign' in request.POST:
             # Handle campaign form submission
             campaign_form = CampaignForm(request.POST, request.FILES)
             if campaign_form.is_valid():
                 campaign_form.save()
-                return redirect('campaign')  # Reload the page to show the new campaign
+                return redirect('campaigns')  # Reload the page to show the new campaign
 
     # Render the forms and campaign data
     context = {

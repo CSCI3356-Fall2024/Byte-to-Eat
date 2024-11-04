@@ -174,8 +174,8 @@
             <a class="nav-link" href="#">Actions</a>
           </li>
           {% if profile.user_type == 'admin' or profile.user_type == 'mod' %}
-          <li class="nav-item {% if request.resolver_match.url_name == 'campaign' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'campaign' %}">Campaign</a>
+          <li class="nav-item {% if request.resolver_match.url_name == 'campaigns' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'campaigns' %}">Campaigns</a>
           </li>
           {% endif %}
           <li class="nav-item">
