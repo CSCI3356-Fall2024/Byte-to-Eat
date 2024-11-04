@@ -22,6 +22,13 @@ class Group(models.Model):
     def can_add_member(self):
         return self.profile_set.count() < self.member_limit
 
+    def update_points(self):
+        total_points = self.earned_points
+        for member in self.members.all():
+            total_points += member.profile.lifetime_points
+        self.points = total_points
+        self.save()
+
 
 class Profile(models.Model):
     USER_TYPES = [
@@ -55,6 +62,22 @@ class GroupMembership(models.Model):
 
     def __str__(self):
         return f"{self.user.username} in {self.group.name}"
+
+
+#when to update the group's total points
+@receiver(post_save, sender=Profile)
+def update_group_points_on_profile_save(sender, instance, **kwargs):
+    if instance.group:
+        instance.group.update_points()
+
+@receiver(post_save, sender=GroupMembership)
+def update_group_points_on_membership_save(sender, instance, **kwargs):
+    instance.group.update_points()
+
+@receiver(models.signals.post_delete, sender=GroupMembership)
+def update_group_points_on_membership_delete(sender, instance, **kwargs):
+    instance.group.update_points()
+    
 
 
 class Campaign(models.Model):
