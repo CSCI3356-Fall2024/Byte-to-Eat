@@ -179,14 +179,14 @@
           </li>
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Groups</a>
+            <a class="nav-link" href="{% url 'groups' %}">Groups</a>
           </li>
         </ul>
       </div>
 
       <a class="nav-link profile-link" href="{% url 'profile' %}">
         <div class="profile-icon">
-          <img src="{% static 'img/profile.png' %}" alt="Profile Icon" />
+          <img src="{% static 'img/profile.png' %}" alt="Default Profile Icon" />
         </div>
       </a>
 
