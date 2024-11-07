@@ -32,7 +32,7 @@
                 </tbody>
                 <tfoot>
                     <tr class="highlight">
-                        <td style="text-align: left;">{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
+                        <td style="text-align: left;"> {{profile.rank}} ) {{ profile.user.first_name }} {{ profile.user.last_name }}</td>
                         <td style="text-align: right;">{{ profile.lifetime_points }}</td>
                     </tr>
                 </tfoot>
@@ -67,7 +67,7 @@
                 </tbody>
                 <tfoot>
                     <tr class="highlight">
-                        <td style="text-align: left;">{{ profile.group.name }}</td>
+                        <td style="text-align: left;"> {{profile.group.rank }}) {{ profile.group.name }}</td>
                         <td style="text-align: right;">{{ profile.group.points }}</td>
                     </tr>
                 </tfoot>

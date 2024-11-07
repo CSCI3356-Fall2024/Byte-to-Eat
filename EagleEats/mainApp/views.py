@@ -39,23 +39,20 @@ def home(request):
     profile = request.user.profile
     users = Profile.objects.all().filter(user_type="student").order_by('-lifetime_points')[:50]
     groups = Group.objects.all().order_by('-points')[:50]
-
-    # Get active campaigns for display on home page
+    profile.update_rank()
     today = timezone.now()
     
-    # Get active challenges/actions
     active_actions = Campaign.objects.filter(
         campaign_type='action',
         start_date__lte=today,
         end_date__gte=today
-    ).order_by('-start_date')[:3]  # Limit to 3 most recent actions
+    ).order_by('-start_date')[:5]
 
-    # Get active rewards
     active_rewards = Campaign.objects.filter(
         campaign_type='redeem',
         start_date__lte=today,
         end_date__gte=today
-    ).order_by('-start_date')[:5]  # Limit to 5 most recent rewards
+    ).order_by('-start_date')[:5]
 
     context = {
         'profile': profile,

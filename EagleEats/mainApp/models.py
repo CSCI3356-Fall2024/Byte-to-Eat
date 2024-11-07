@@ -15,12 +15,17 @@ class Group(models.Model):
     group_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     members = models.ManyToManyField(User, related_name='member_list', through='GroupMembership')
     leader = models.ForeignKey(User, related_name='led_groups', on_delete=models.SET_NULL, null=True, blank=True)
+    rank = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name 
 
     def can_add_member(self):
         return self.profile_set.count() < self.member_limit
+
+    def update_rank(self):
+        self.rank = Group.objects.filter(points__gt=self.points).count() + 1
+        self.save()
 
     def update_points(self):
         total_points = self.earned_points
@@ -46,6 +51,7 @@ class Profile(models.Model):
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
     email = models.EmailField(max_length=100, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
+    rank = models.IntegerField(default=0)
 
     # Point-related fields
     lifetime_points = models.IntegerField(default=0)
@@ -53,6 +59,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    def update_rank(self):
+        if self.group:
+            self.group.update_rank()
+        self.rank = Profile.objects.filter(lifetime_points__gt=self.lifetime_points).count() + 1
+        self.save()
 
 class GroupMembership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -113,13 +125,11 @@ def update_user_points(sender, instance, created, **kwargs):
     if created:
         profile = instance.user.profile
         campaign_points = instance.campaign.individual_points
-
         if instance.transaction_type == 'action':
             profile.lifetime_points += campaign_points
             profile.current_points += campaign_points
         elif instance.transaction_type == 'redeem':
             profile.current_points -= campaign_points
-
         profile.save()
 
 # Signals to auto-create Profile on User creation
