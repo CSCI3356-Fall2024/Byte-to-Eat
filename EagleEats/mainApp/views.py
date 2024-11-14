@@ -44,4 +44,5 @@ def campaign(request):
     return render(request, 'campaign.html', {'campaignModel': campaign, 'profile': profile })
 
 def actions(request):
+    profile = request.user.profile
     return render(request, 'actions.html', {'profile': profile})
