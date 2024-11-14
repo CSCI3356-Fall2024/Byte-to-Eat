@@ -21,7 +21,7 @@
         padding: 0.5em 1em;
         position: relative;
       }
-    
+   
       .navbar-bottom-bar {
         height: 0.25em;
         background-color: black;
@@ -30,48 +30,48 @@
         left: 0;
         right: 0;
       }
-    
+   
       .navbar-brand {
         display: flex;
         align-items: center;
       }
-    
+   
       .navbar-brand img.logo {
         width: 50px;
         height: auto;
         margin-right: 15px;
         margin-left: 10px;
       }
-    
+   
       .navbar-brand .brand-text-container {
         display: flex;
         flex-direction: column;
       }
-    
+   
       .navbar-brand .brand-text {
         font-size: 1.5rem;
         font-weight: bold;
         color: white;
       }
-    
+   
       .navbar-brand .subtext {
         font-size: 1rem;
         font-weight: bold;
         color: #8d1c2e;
       }
-    
+   
       .navbar-nav {
         width: auto;
         display: flex;
         align-items: center;
         gap: 20px;
       }
-    
+   
       .nav-item {
         display: flex;
         align-items: center;
       }
-    
+   
       .nav-item .nav-link {
         color: white !important;
         font-weight: bold;
@@ -89,12 +89,12 @@
         margin: 0 10px;
         white-space: nowrap;
       }
-    
+   
       .nav-link:hover {
         background-color: #b8db15;
         color: white !important;
       }
-    
+   
       .profile-icon {
         width: 50px;
         height: 50px;
@@ -103,45 +103,46 @@
         background-color: #8fb25a;
         overflow: hidden;
       }
-    
+   
       .profile-link {
         margin-left: auto;
         margin-right: 30px;
       }
-    
+   
       .profile-icon img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-    
+   
       .profile-icon:hover {
         background-color: #b8db15;
       }
-    
+   
       .navbar .dropdown-menu {
         background-color: #6f8f40;
         box-shadow: none;
       }
-    
+   
       .navbar .dropdown-item:hover {
         background-color: #b8db15;
         color: white;
       }
-    
+   
       @media (max-width: 992px) {
         .nav-item .nav-link {
           width: 140px;
           font-size: 1rem;
           padding: 8px 15px;
         }
-        
+       
         .navbar-nav {
           gap: 10px;
         }
       }
     </style>
   </head>
+
 
   <body>
     <nav class="navbar navbar-expand-lg">
@@ -152,7 +153,7 @@
           <span class="subtext">Boston College</span>
         </div>
       </a>
-
+     
       <button
         class="navbar-toggler"
         type="button"
@@ -165,8 +166,9 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-        <ul class="navbar-nav">
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav justify-content-center w-100">
           <li class="nav-item">
             <a class="nav-link" href="#">Rewards</a>
           </li>
@@ -179,19 +181,22 @@
           </li>
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Groups</a>
+            <a class="nav-link" href="#">Group</a>
           </li>
         </ul>
       </div>
 
+
       <a class="nav-link profile-link" href="{% url 'profile' %}">
         <div class="profile-icon">
-          <img src="{% static 'img/profile.png' %}" alt="Profile Icon" />
+          <img src="{% static 'img/profile.png' %}" alt="Default Profile Icon" />
         </div>
       </a>
 
+
       <div class="navbar-bottom-bar"></div>
     </nav>
+
 
     <div class="container-fluid">
       <div>
@@ -202,7 +207,12 @@
       </div>
     </div>
 
+
     <!-- Bootstrap JS, Popper.js, and necessary scripts -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
