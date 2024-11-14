@@ -14,7 +14,9 @@ urlpatterns = [
     path("", views.home, name='home'),
     path("profile/", views.profile, name='profile'),
     path("home/", views.home, name='home'),
-    path("campaign/", views.campaign, name='campaign')
+    path("campaign/", views.campaign, name='campaign'),
+    path("actions/", views.actions, name='actions')
+
 ]
 
 if settings.DEBUG:
