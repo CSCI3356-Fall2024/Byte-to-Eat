@@ -3,6 +3,12 @@ from .models import Profile, Group, Transaction, Campaign
 from django.utils import timezone
 
 class ProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['major'].required = True
+        self.fields['graduation_year'].required = True
+        self.fields['eagle_id'].required = True
+        
     class Meta:
         model = Profile
         fields = ['profile_picture', 'major', 'school', 'graduation_year', 'eagle_id', 'user_type']
