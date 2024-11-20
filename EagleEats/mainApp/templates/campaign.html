@@ -11,11 +11,27 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ transaction_form.as_p }}
-                <button type="submit" name="transaction_form" class="btn btn-primary">Add Transaction</button>
+                <button type="submit" name="transaction_form" style="background-color:#66723D"class="btn btn-primary">Add Transaction</button>
             </form>
         </div>
     </section>
-
+    <style>
+        .table {
+            table-layout: fixed; /* Fix the table layout */
+            width: 100%; /* Ensure the table uses full width */
+        }
+    
+        .table-name {
+            width: 200px; /* Set a fixed width for the name column */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    
+        .table-dates {
+            min-width: 150px; /* Set a minimum width for the dates column */
+        }
+    </style>
     <!-- Active Campaigns Section -->
     <section class="mb-5">
         <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active</h3>
@@ -24,16 +40,17 @@
                 <table class="table">
                     <thead>
                         <tr style="background-color: #66723D; color: white;">
-                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;">Name</th>
-                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;">Dates</th>
+                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;" class="table-name">Name</th>
+                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;" class="table-dates">Dates</th>
                             <th style="padding: 10px; width: 50px; position: sticky; top: 0; background-color: #66723D;">
                                 <div style="display: flex;">
                                     <!-- Trigger button for the campaign modal -->
                                     <button type="button" class="btn btn-success"
-                                    style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1.2rem; 
-                                    display: flex; align-items: center; justify-content: center; line-height: 2;" data-bs-toggle="modal" data-bs-target="#campaignModal">
-                                        +
-                                    </button>
+                                    style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1rem; 
+                                    display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; "data-bs-toggle="modal" data-bs-target="#campaignModal">
+                                    +
+                                </button>
+                                
                                 </div>
                             </th>
                         </tr>
@@ -43,7 +60,14 @@
                             <tr>
                                 <td style="padding: 15px;">{{ campaign.title }}</td>
                                 <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
-                                <td></td> <!-- Empty cell to align with header -->
+                                <td style="padding: 15px;">
+                                    <a href="#" style="text-decoration: underline; color: #66723D;"
+                                        data-bs-toggle="modal" data-bs-target="#editCampaignModal"
+                                        onclick="loadCampaignData('{{ campaign.id }}')">
+                                        <span style="white-space: nowrap;">Edit</span>
+                                    </a>
+                                </td>
+                                
                             </tr>
                         {% empty %}
                             <tr>
@@ -64,15 +88,16 @@
                 <table class="table">
                     <thead>
                         <tr style="background-color: #66723D; color: white;">
-                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;">Name</th>
-                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;">Dates</th>
+                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;" class="table-name">Name</th>
+                            <th style="padding: 15px; text-align: left; position: sticky; top: 0; background-color: #66723D;" class="table-dates">Dates</th>
                             <th style="padding: 10px; width: 50px; position: sticky; top: 0; background-color: #66723D;">
                                 <div style="display: flex;">
                                     <button type="button" class="btn btn-success"
-                                    style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1.2rem; 
-                                    display: flex; align-items: center; justify-content: center; line-height: 2;" data-bs-toggle="modal" data-bs-target="#campaignModal">
-                                        +
-                                    </button>
+                                    style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1rem; 
+                                    display: flex; align-items: center; justify-content: center; padding: 0; margin: 0;"data-bs-toggle="modal" data-bs-target="#campaignModal">
+                                    +
+                                </button>
+                                
                                 </div>
                             </th>
                         </tr>
@@ -82,7 +107,14 @@
                             <tr>
                                 <td style="padding: 15px;">{{ campaign.title }}</td>
                                 <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
-                                <td></td> <!-- Empty cell to align with header -->
+                                <td style="padding: 15px;">
+                                    <a href="#" style="text-decoration: underline; color: #66723D;"
+                                    data-bs-toggle="modal" data-bs-target="#editCampaignModal"
+                                    onclick="loadCampaignData('{{ campaign.id }}')">
+                                    <span style="white-space: nowrap;">Edit</span>
+                                </a>
+                                </td>
+                                
                             </tr>
                         {% empty %}
                             <tr>
@@ -107,7 +139,26 @@
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ campaign_form.as_p }}
-                        <button type="submit" name="save_campaign" class="btn btn-primary">Save Campaign</button>
+                        <button type="submit" name="save_campaign" style="background-color:#66723D " class="btn btn-primary">Save Campaign</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editCampaignModal" tabindex="-1" aria-labelledby="editCampaignModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #66723D; color: white;">
+                    <h5 class="modal-title" id="editCampaignModalLabel">Edit Campaign</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCampaignForm" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ campaign_form.as_p }}
+                        <button type="submit" name="save_campaign" style="background-color:#66723D" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" name="delete_campaign" style="background-color:red" class="btn btn-danger">Delete Campaign</button>
                     </form>
                 </div>
             </div>
@@ -118,5 +169,29 @@
 <!-- Bootstrap JavaScript for modal functionality -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+<script>
+    function loadCampaignData(campaignId) {
+    campaignId = parseInt(campaignId, 10); // Convert to integer if needed
+
+    fetch(`/edit-campaign/${campaignId}/`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Log data to verify the response
+            document.querySelector('#editCampaignForm [name="title"]').value = data.title;
+            document.querySelector('#editCampaignForm [name="description"]').value = data.description;
+            document.querySelector('#editCampaignForm [name="start_date"]').value = data.start_date;
+            document.querySelector('#editCampaignForm [name="end_date"]').value = data.end_date;
+            document.querySelector('#editCampaignForm [name="individual_points"]').value = data.individual_points;
+            document.querySelector('#editCampaignForm [name="group_points"]').value = data.group_points;
+            document.querySelector('#editCampaignForm [name="campaign_type"]').value = data.campaign_type;
+            document.querySelector('#editCampaignForm [name="campaign_id"]').value = data.campaign_id;
+            // Update the form action URL
+            document.querySelector('#editCampaignForm').action = `/edit-campaign/${campaignId}/`;
+        })
+        .catch(error => console.error('Error loading campaign data:', error));
+}
+
+</script>
 
 {% endblock %}

@@ -33,3 +33,16 @@ if __name__ == '__main__':
 #makes migrations-- need to run everytime we make a change to the database models
 #python3 manage.py makemigrations
 #python3 manage.py migrate
+
+
+
+
+#Custom Commands
+#creates 8 test campaigns
+#python3 manage.py create_test_campaigns
+
+#deletes all campaigns
+#python3 manage.py delete_all_campaigns
+
+#andy's user script
+#python3 manage.py create_test_users
