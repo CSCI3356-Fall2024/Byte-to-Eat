@@ -84,7 +84,6 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
-    'mainApp.pipeline.check_first_login',                      # Custom step to check first login
 )
 
 LOGIN_REDIRECT_URL = '/post-login/'

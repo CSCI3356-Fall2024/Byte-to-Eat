@@ -28,7 +28,7 @@ def login(request):
 
 @login_required
 def post_login_redirect(request):
-    if request.session.get('is_first_login', False):
+    if request.user.profile.eagle_id is None:
         return redirect('profile')
     else:
         return redirect('/')
