@@ -14,8 +14,17 @@ urlpatterns = [
     path("", views.home, name='home'),
     path("profile/", views.profile, name='profile'),
     path("home/", views.home, name='home'),
-    path("campaign/", views.campaign, name='campaign'),
-    path("actions/", views.actions, name='actions')
+    path("rewards/", views.rewards, name='rewards'),
+    path("actions/", views.actions, name='actions'),
+    path("campaigns/", views.campaigns, name='campaigns'),
+    path('create_group/', views.create_group, name='create_group'),
+    path('group/<int:group_id>/invite/', views.invite_to_group, name='invite_to_group'),
+    path('groups/', views.groups, name='groups'),
+    path('invitation/<int:invitation_id>/accept/', views.accept_invitation, name='accept_invitation'),
+    path('invitation/<int:invitation_id>/decline/', views.decline_invitation, name='decline_invitation'),
+    path('group/<int:group_id>/leave/', views.leave_group, name='leave_group'),
+    path('group/<int:group_id>/delete/', views.delete_group, name='delete_group'),
+    path('edit-campaign/<int:campaign_id>/', views.edit_campaign, name='edit_campaign'),
 
 ]
 

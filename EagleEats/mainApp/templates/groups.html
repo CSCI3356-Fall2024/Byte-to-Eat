@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Your Group</h1>
+{% if user_group %}
+    <div class="group-border">
+        <div class="group-info">
+            <h3 style="text-align: right;"><b>{{ user_group.points }} pts</b></h3>
+            <h4>{{ user_group.name }}</h4>
+        </div>
+        <div class="member-box">
+            <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader)</small></span>
+            <span class="points">{{ user_group.leader.profile.lifetime_points }} pts</span>
+        </div>
+        {% for member in user_group.members.all %}
+            {% if member != user_group.leader %}
+                <div class="member-box">
+                    <span>{{ member.first_name }} {{ member.last_name }}</span>
+                    <span class="points">{{ member.profile.lifetime_points }} pts</span>
+                </div>
+            {% endif %}
+        {% endfor %}        
+        <div class="invite-field">
+            {% if is_leader %}
+                <form method="post" action="{% url 'invite_to_group' user_group.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username to invite">
+                    <button type="submit">Invite</button>
+                </form>
+                <form method="post" action="{% url 'delete_group' user_group.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete Group</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'leave_group' user_group.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Leave Group</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+<!-- NOT IN GROUP -->
+{% else %}
+    <p>You are not in a group.</p>
+    <a href="{% url 'create_group' %}">Create a New Group</a>
+    <h2>Invitations</h2>
+    <ul>
+        {% for invitation in invitations %}
+            <li>
+                {{ invitation.group.name }} - Invited by {{ invitation.invited_by.username }}
+                <a href="{% url 'accept_invitation' invitation.id %}">Accept</a>
+                <a href="{% url 'decline_invitation' invitation.id %}">Decline</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .group-border {
+        width: 100%;
+        padding: 20px;
+        background-color: #789E4E;
+        border-radius: 10px;
+    }
+    .group-info {
+        width: 100%;
+        padding: 20px;
+        background-color: #E6E5E3;
+        color: #000000;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .member-title {
+        width: 30%;
+        padding: 10px;
+        background-color: #b8db15;
+        color: #000000;
+        border-radius: 10px;
+    }
+    .member-box {
+        width: 100%;
+        padding: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: #E6E5E3;
+        color: #000000;
+        border-radius: 10px;
+        margin-bottom: 7px;
+    }
+    .invite-field {
+        margin-top: 20px;
+    }
+    .points {
+        text-align: right;
+    }
+
+</style>
+
+{% endblock %}

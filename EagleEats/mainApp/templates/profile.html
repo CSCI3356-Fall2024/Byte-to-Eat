@@ -12,11 +12,11 @@
                 {% if user.profile.profile_picture %}
                     <img id="profileImage" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
                          class="rounded-circle img-thumbnail"
-                         style="width: 150px; height: 150px; object-fit: cover;">
+                         style="width: 250px; height: 250px; object-fit: cover;">
                 {% else %}
                     <img id="profileImage" src="{% static 'img/profile.png' %}" alt="Default Profile Picture"
                          class="rounded-circle img-thumbnail"
-                         style="width: 150px; height: 150px; object-fit: cover;">
+                         style="width: 250px; height: 250px; object-fit: cover;">
                 {% endif %}
                 <label for="id_profile_picture" class="profile-edit-icon">
                     <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-
+    <div></div>
     <!-- Welcome Message -->
     <div class="row">
         <div class="col-sm-12 mb-3 text-center">
