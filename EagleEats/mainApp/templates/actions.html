@@ -3,8 +3,43 @@
 
 {% block content %}
 <main class="container my-5">
-    <h2 class="text-center mb-4" style="font-size: 2rem; color: #66843a;">Actions</h2>
+    <style>
+        .campaign-card img {
+            width: 100%;        
+            height: 200px;    
+            object-fit: cover;  
+            opacity: 0.7; /* Reduced opacity */
+        }
 
+        .campaign-card .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* Dark overlay for image */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .no-image-title {
+            height: 200px;
+            background-color: #d4e9d4;
+            color: #66723D;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+    </style>
+    <h2 class="text-center mb-4" style="font-size: 2rem; color: #66843a;">Actions</h2>
     <!-- Weekly Group Challenge Section -->
     <section class="mb-5">
         <div class="card" style="border: none; background-color: #869b67;">
@@ -28,45 +63,67 @@
     <section>
         <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active Challenges</h3>
         <div class="row">
-            <!-- Challenge Cards -->
-            <div class="col-md-4 mb-3">
-                <div class="card" style="border: none; background-color: #f2f2f2;">
-                    <img src="{% static 'images/green_to_go_box.jpg' %}" class="card-img-top" alt="Green to Go Box">
-                    <div class="card-body text-center">
-                        <h5 class="card-title" style="color: #66723D;">Use Green to Go Box</h5>
-                        <p class="card-text" style="color: #66723D;">100 pts</p>
+            {% for campaign in active_campaigns %}
+                <div class="col-md-4 mb-3">
+                    <div class="campaign-container" style="position: relative;">
+                        <div class="card campaign-card" style="border: none; background-color: #f2f2f2;">
+                            {% if campaign.campaign_picture %}
+                                <img src="{{ campaign.campaign_picture.url }}" class="card-img-top" alt="{{ campaign.title }}">
+                                <div class="overlay">{{ campaign.title }}</div> <!-- Title over the image -->
+                            {% else %}
+                                <img src="{% static 'img/eagle.png' %}" class="card-img-top" alt="{{ campaign.title }}">
+                                <div class="overlay">{{ campaign.title }}</div> <!-- Title over the image -->
+                            {% endif %}
+                        </div>
+                        <!-- Dropdown section -->
+                        <div class="campaign-details" style="display: none; background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; position: absolute; top: 110%; left: 0; width: 100%; z-index: 10; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                            <p style="color:#66723D"><strong>{{campaign.title}}</strong></p>
+                            <p><strong>Individual Points:</strong> {{ campaign.individual_points }} pts</p>
+                            <p><strong>Group Points:</strong> {{ campaign.group_points }} pts</p>
+                            <p><strong>Active:</strong> {{ campaign.start_date|date:"F j, Y" }} - {{ campaign.end_date|date:"F j, Y" }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card" style="border: none; background-color: #f2f2f2;">
-                    <img src="{% static 'images/fresh_table.jpg' %}" class="card-img-top" alt="FRESH table">
-                    <div class="card-body text-center">
-                        <h5 class="card-title" style="color: #66723D;">Attend FRESH table</h5>
-                        <p class="card-text" style="color: #66723D;">150 pts</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card" style="border: none; background-color: #f2f2f2;">
-                    <img src="{% static 'images/farmers_market.jpg' %}" class="card-img-top" alt="Farmers Market">
-                    <div class="card-body text-center">
-                        <h5 class="card-title" style="color: #66723D;">Attend Farmers Market</h5>
-                        <p class="card-text" style="color: #66723D;">200 pts</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card" style="border: none; background-color: #f2f2f2;">
-                    <img src="{% static 'images/sustainability_event.jpg' %}" class="card-img-top" alt="Sustainability Event">
-                    <div class="card-body text-center">
-                        <h5 class="card-title" style="color: #66723D;">Attend Sustainability Event</h5>
-                        <p class="card-text" style="color: #66723D;">200 pts</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Additional challenge cards can be added here in a similar way -->
+            {% empty %}
+                <p class="text-center">No active campaigns at the moment.</p>
+            {% endfor %}
         </div>
     </section>
 </main>
+
+<style>
+    .campaign-container {
+        position: relative;
+    }
+
+    .campaign-card {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .campaign-card:hover {
+        transform: scale(1.05);
+    }
+
+    /* Show dropdown on hover */
+    .campaign-container:hover .campaign-details {
+        display: block !important;
+    }
+
+    /* Add animation to dropdown */
+    .campaign-details {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endblock %}
