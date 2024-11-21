@@ -2,7 +2,7 @@
 {% load static %} 
 {% block content %} 
 
-<h1>Welcome back, {{ user.first_name }}!</h1>
+<h1>Welcome back, {{ user.first_name }}, you currently have {{user.profile.current_points}} points!</h1>
 
 <div class="leaderboards-container">
     <div class="leaderboard-container">
