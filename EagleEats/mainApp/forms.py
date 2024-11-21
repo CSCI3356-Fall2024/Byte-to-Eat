@@ -16,6 +16,34 @@ class ProfileForm(forms.ModelForm):
             'user_type': forms.Select(attrs={'class': 'form-control'}),
         }
 
+class RedeemForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['campaign']  # Only include the campaign field
+        widgets = {
+            'campaign': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter campaigns to show only active redeem campaigns
+        today = timezone.now()
+        self.fields['campaign'].queryset = Campaign.objects.filter(
+            campaign_type='redeem',
+            start_date__lte=today,
+            end_date__gte=today
+        )
+
+    def save(self, user, commit=True):
+        # Create the transaction and associate it with the logged-in user
+        instance = super().save(commit=False)
+        instance.user = user
+        instance.transaction_type = 'redeem'  # Explicitly set transaction type
+        if commit:
+            instance.save()
+        return instance
+
+
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction

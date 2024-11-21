@@ -4,7 +4,7 @@ from .models import Profile, Campaign, Transaction, Group, GroupMembership, Grou
 from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
-from .forms import TransactionForm, CampaignForm 
+from .forms import TransactionForm, CampaignForm, RedeemForm
 from .forms import ProfileForm, GroupForm
 from django.contrib.auth.models import User 
 from django.http import HttpResponseForbidden
@@ -106,11 +106,23 @@ def rewards(request):
         end_date__gte=today
     ).order_by('-start_date')
 
+    # Instantiate the RedeemForm
+    redeem_form = RedeemForm()
+
+    if request.method == 'POST':
+        redeem_form = RedeemForm(request.POST)
+        if redeem_form.is_valid():
+            # Save the form and associate it with the logged-in user
+            redeem_form.save(user=request.user)
+            return redirect('rewards')  # Reload the page to show updated data
+
     context = {
         'profile': profile,
         'available_rewards': available_rewards,
+        'redeem_form': redeem_form,
     }
     return render(request, 'rewards.html', context)
+
 
 @login_required
 @admin_required

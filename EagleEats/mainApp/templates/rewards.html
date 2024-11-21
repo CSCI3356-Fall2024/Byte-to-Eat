@@ -1,5 +1,22 @@
-{% extends 'base.html' %} 
-
+{% extends 'base.html' %}
 {% block content %}
 <h1>Rewards</h1>
+
+<div>
+    <h2>Available Rewards</h2>
+    <ul>
+        {% for reward in available_rewards %}
+            <li>{{ reward.title }} (Redeem for: {{reward.individual_points}} Ends: {{ reward.end_date }})</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div>
+    <h2>Redeem a Reward</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ redeem_form.as_p }}
+        <button type="submit" class="btn btn-primary">Redeem</button>
+    </form>
+</div>
 {% endblock %}
