@@ -42,18 +42,53 @@
 
 <!-- NOT IN GROUP -->
 {% else %}
-    <p>You are not in a group.</p>
-    <a href="{% url 'create_group' %}">Create a New Group</a>
-    <h2>Invitations</h2>
-    <ul>
-        {% for invitation in invitations %}
-            <li>
-                {{ invitation.group.name }} - Invited by {{ invitation.invited_by.username }}
-                <a href="{% url 'accept_invitation' invitation.id %}">Accept</a>
-                <a href="{% url 'decline_invitation' invitation.id %}">Decline</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="no-group-container">
+        <div class="no-group-message">
+            <h3>Unfortunately, you are not in a group yet...</h3>
+            <h5>Lets change that!</h5>
+        </div>
+
+        <div class="grid-container">
+            <div class="grid-item">
+                <div class="option-title">
+                    <h3>Join a Group</h3>
+                </div>
+                <p> * Accept an invitation from an existing team</p>
+                <p> * Join their effort to be sustainable</p>
+                <p> * Hold each other accountable</p>
+                <p><b>(Your invitations are below)</b></p>
+            </div>
+            <div class="grid-item small-column">
+                <p class="or-text">OR</p>
+            </div>
+            <div class="grid-item">
+                <div class="option-title">
+                    <h3>Create a New Group</h3>
+                    <h3><a href="{% url 'create_group' %}" class="btn-green">+</a></h3>
+                </div>
+                <p> * Send invitations to build your team</p>
+                <p> * Lead your team to be more sustainable</p>
+                <p> * Hold each other accountable</p>
+                <p><b>(Press the + above)</b></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="invitations-container">
+        <div class="invitations">
+            <h2>Invitations</h2>
+            <ul>
+            {% for invitation in invitations %}
+            <div class="invitation-box">
+                <p>{{ invitation.group.name }} - Invited by {{ invitation.invited_by.first_name }} {{ invitation.invited_by.last_name }} ({{ invitation.invited_by.username }})</p>
+                <a href="{% url 'accept_invitation' invitation.id %}" class="accept-btn">Accept</a>
+                <a href="{% url 'decline_invitation' invitation.id %}" class="decline-btn">Decline</a>
+            </div>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endif %}
 
 
@@ -99,7 +134,107 @@
     .points {
         text-align: right;
     }
+    .no-group-message {
+        text-align: center;
+        width: 100%;
+        padding: 20px;
+        background-color: #E6E5E3;
+        border-radius: 10px;
+    }
 
+    .btn-green {
+        display: inline-block;
+        background-color: #E6E5E3; /* Light green color */
+        color: #789E4E;
+        text-align: center;
+        text-decoration: none
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        padding-left: 20px;
+    }
+    .btn-green:hover {
+        color: #54693e; /* Slightly darker green for hover effect */
+    }
+
+    .invitations-container {
+        display: flex;
+        justify-content: left;
+        align-items: left;
+        margin-top: 50px;
+        padding: 20px;
+        padding-left: 40px;
+        background-color: #E6E5E3;
+        border-radius: 10px;
+    }
+
+    .or-text {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .invitations {
+        text-align: left;
+    }
+
+    .invitation-box {
+        border: 2px solid #789E4E;
+        padding: 15px;
+        margin: 10px auto;
+        border-radius: 5px;
+        max-width: 600px;
+    }
+
+    .invitation-box p {
+        margin: 0 0 10px 0;
+    }
+
+    .accept-btn, .decline-btn {
+        margin: 5px;
+        padding: 5px 10px;
+        background-color: #789E4E;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .accept-btn:hover, .decline-btn:hover {
+        color: #54693e; /* Slightly darker green for hover effect */
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr; /* 'auto' makes the middle column smaller */
+        gap: 20px;
+        padding-top: 50px;
+    }
+
+    .grid-item {
+        padding: 10px;
+        text-align: center;
+        background-color: #E6E5E3;
+        border-radius: 10px;
+    }
+
+    .small-column {
+        width: 100px; /* Adjust this value to make the column smaller */
+        background-color: #789E4E;
+    }
+
+    .no-group-container {
+        width: 100%;
+        padding: 20px;
+        background-color: #789E4E;
+        border-radius: 10px;
+        padding-top: 30px;
+        margin-top: 20px;
+    }
+
+    .option-title {
+        color: #789E4E;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
 
 {% endblock %}
