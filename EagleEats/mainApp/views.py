@@ -168,7 +168,7 @@ def campaigns(request):
 @admin_required
 def edit_campaign(request, campaign_id):
     campaign = get_object_or_404(Campaign, id=campaign_id)
-
+    print(request.method)
     if request.method == 'POST':
         if 'save_campaign' in request.POST:
             form = CampaignForm(request.POST, request.FILES, instance=campaign)
@@ -182,12 +182,11 @@ def edit_campaign(request, campaign_id):
             messages.success(request, 'Campaign deleted successfully.')
             return redirect('campaigns')
 
-    elif request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Include all fields for the JSON response
+    elif request.method == 'GET':
         campaign_data = {
             'title': campaign.title,
             'description': campaign.description,
-            'start_date': campaign.start_date.strftime('%Y-%m-%dT%H:%M'),  # Use ISO format for datetime
+            'start_date': campaign.start_date.strftime('%Y-%m-%dT%H:%M'),
             'end_date': campaign.end_date.strftime('%Y-%m-%dT%H:%M'),
             'individual_points': campaign.individual_points,
             'group_points': campaign.group_points,
@@ -195,11 +194,8 @@ def edit_campaign(request, campaign_id):
             'campaign_id': campaign.campaign_id,
         }
         return JsonResponse(campaign_data)
-
-    else:
-        form = CampaignForm(instance=campaign)
-
-    return render(request, 'campaign_modal.html', {'form': form, 'campaign': campaign})
+    form = CampaignForm(instance=campaign)
+    return render(request, 'campaign.html', {'campaign_form': form, 'campaign': campaign})
 
 
 @login_required
