@@ -1,15 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <h1>Rewards</h1>
-
-<div>
-    <h2>Available Rewards</h2>
-    <ul>
-        {% for reward in available_rewards %}
-            <li>{{ reward.title }} (Redeem for: {{reward.individual_points}} Ends: {{ reward.end_date }})</li>
-        {% endfor %}
-    </ul>
-</div>
 
 <div>
     <h2>Redeem a Reward</h2>
@@ -19,4 +11,109 @@
         <button type="submit" class="btn btn-primary">Redeem</button>
     </form>
 </div>
+
+<main class="container my-5">
+    <style>
+        .campaign-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            opacity: 0.5;
+        }
+
+        .campaign-card .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .no-image-title {
+            height: 200px;
+            background-color: #d4e9d4;
+            color: #66723D;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+    </style>
+
+    <h2 class="text-center mb-4" style="font-size: 2rem; color: #66843a;">Rewards</h2>
+
+    <!-- Active Challenges Section -->
+    <section>
+        <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active Challenges</h3>
+        <div class="row">
+            {% for reward in available_rewards %}
+                <div class="col-md-4 mb-3">
+                    <div class="campaign-container" style="position: relative;">
+                        <div class="card campaign-card" style="border: none; background-color: #f2f2f2;">
+                            {% if reward.campaign_picture %}
+                                <img src="{{ reward.campaign_picture.url }}" class="card-img-top" alt="{{ reward.title }}">
+                                <div class="overlay">{{ reward.title }}</div> <!-- Title over the image -->
+                            {% else %}
+                                <img src="{% static 'img/eagle.png' %}" class="card-img-top" alt="{{ reward.title }}">
+                                <div class="overlay">{{ reward.title }}</div> <!-- Title over the image -->
+                            {% endif %}
+                        </div>
+                        <!-- Dropdown section -->
+                        <div class="campaign-details" style="display: none; background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; position: absolute; top: 110%; left: 0; width: 100%; z-index: 10; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                            <p style="color:#66723D"><strong>{{ reward.title }}</strong></p>
+                            <p><strong>Individual Points:</strong> {{ reward.individual_points }} pts</p>
+                            <p><strong>Group Points:</strong> {{ reward.group_points }} pts</p>
+                            <p><strong>Active:</strong> {{ reward.start_date|date:"F j, Y" }} - {{ reward.end_date|date:"F j, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No active rewards at the moment.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+<style>
+    .campaign-container {
+        position: relative;
+    }
+
+    .campaign-card {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .campaign-card:hover {
+        transform: scale(1.05);
+    }
+
+    .campaign-container:hover .campaign-details {
+        display: block !important;
+    }
+
+    .campaign-details {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endblock %}
