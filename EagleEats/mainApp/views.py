@@ -218,7 +218,7 @@ def create_group(request):
             return redirect('groups')
     else:
         form = GroupForm()
-    return render(request, 'create_group.html', {'form': form})
+    return render(request, 'create_group.html', {'form': form, "profile" : request.user.profile})
 
 
 @login_required
