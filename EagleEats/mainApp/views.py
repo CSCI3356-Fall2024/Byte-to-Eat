@@ -99,6 +99,12 @@ def rewards(request):
     profile = request.user.profile
     today = timezone.now()
     
+    available_rewards = Campaign.objects.filter(
+        campaign_type='redeem',
+        start_date__lte=today,
+        end_date__gte=today
+    ).order_by('-start_date')
+
     # Get rewards for each point threshold
     rewards_1000 = Campaign.objects.filter(
         campaign_type='redeem',
@@ -145,6 +151,7 @@ def rewards(request):
 
     context = {
         'profile': profile,
+        'available_rewards': available_rewards,
         'rewards_1000': rewards_1000,
         'rewards_1500': rewards_1500,
         'rewards_2000': rewards_2000,
