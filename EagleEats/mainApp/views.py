@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Campaign, Transaction, Group, GroupMembership, GroupInvitation
+from .models import Profile, Campaign, Group, GroupMembership, GroupInvitation
 from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
@@ -71,7 +71,7 @@ def profile(request):
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('/')  # Redirect to the homepage after updating the profile
+           
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'profile.html', {'form': form, 'profile': profile})
