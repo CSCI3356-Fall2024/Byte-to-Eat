@@ -1,10 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Create a New Group</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create Group</button>
-</form>
+<div class="group-container">
+    <h1>Create a New Group</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+            <button type="submit" class="btn-submit">Create Group</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
+
+
+<style>
+
+    .group-container {
+         text-align: center;
+        margin-top: 50px;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        gap: 10 px;
+    }
+    .form-row label {
+        margin-right: 10px;
+    }
+
+    .form-row input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        flex: 1; /* Make the input field flexible */
+    }
+
+
+    .align-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 50px;
+        background-color: #789E4E;
+    }
+
+    .btn-submit {
+        padding: 10px 20px;
+        background-color: #4CAF50; /* Green color */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+</style>
