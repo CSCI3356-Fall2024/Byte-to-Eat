@@ -33,7 +33,7 @@ class RedeemForm(forms.ModelForm):
             campaign_type='redeem',
             start_date__lte=today,
             end_date__gte=today
-            ,individual_points__lte=current_points  # Only campaigns within the user's budget
+            #,individual_points__lte=current_points  # Only campaigns within the user's budget
         )
 
     def save(self, user, commit=True):
