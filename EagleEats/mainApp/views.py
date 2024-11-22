@@ -317,6 +317,9 @@ def groups(request):
             if profile_picture_form.is_valid():
                 profile_picture_form.save()
                 return redirect('groups')
+        elif request.POST.get('action') == 'delete' and is_leader:
+            user_group.delete()
+            user_group = None
         else:
             group_form = GroupForm(request.POST, instance=user_group)
             if group_form.is_valid():
@@ -326,4 +329,17 @@ def groups(request):
         group_form = GroupForm(instance=user_group)
         profile_picture_form = ProfilePictureForm(instance=user_group)
 
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader, 'group_form': group_form, 'profile_picture_form': profile_picture_form})
+    if user_group:
+        # Calculate the percentage of completed actions
+        total_members = user_group.members.count()
+        completed_members = Profile.objects.filter(user__in=user_group.members.all(), completed_action=True).count()
+        if total_members > 0:
+            completion_percentage = (completed_members / total_members) * 100
+        else:
+            completion_percentage = 0
+    else:
+        total_members = 0
+        completed_members = 0
+        completion_percentage = 0
+
+    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader, 'group_form': group_form, 'profile_picture_form': profile_picture_form, 'completed_members': completed_members, 'completion_percentage': completion_percentage, 'total_members': total_members})

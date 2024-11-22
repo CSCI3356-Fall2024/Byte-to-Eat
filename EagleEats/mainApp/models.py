@@ -18,6 +18,7 @@ class Group(models.Model):
     rank = models.IntegerField(default=0)
     profile_picture = models.ImageField(upload_to='group_pics/', null=True, blank=True, default= 'img/profile.png')
 
+    
     def __str__(self):
         return self.name 
 
@@ -53,6 +54,7 @@ class Profile(models.Model):
     email = models.EmailField(max_length=100, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.IntegerField(default=0)
+    completed_action = models.BooleanField(default=False)
 
     # Point-related fields
     lifetime_points = models.IntegerField(default=0)
