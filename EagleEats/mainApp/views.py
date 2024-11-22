@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
 from .forms import TransactionForm, CampaignForm, RedeemForm
-from .forms import ProfileForm, GroupForm
+from .forms import ProfileForm, GroupForm, ProfilePictureForm
 from django.contrib.auth.models import User 
 from django.http import HttpResponseForbidden
 from functools import wraps
@@ -311,4 +311,19 @@ def groups(request):
     user_group = profile.group
     invitations = GroupInvitation.objects.filter(invitee=request.user, accepted=False)
     is_leader = GroupMembership.objects.filter(user=request.user, group=user_group, is_leader=True).exists() if user_group else False
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader})
+    if request.method == 'POST':
+        if 'profile_picture' in request.FILES:
+            profile_picture_form = ProfilePictureForm(request.POST, request.FILES, instance=user_group)
+            if profile_picture_form.is_valid():
+                profile_picture_form.save()
+                return redirect('groups')
+        else:
+            group_form = GroupForm(request.POST, instance=user_group)
+            if group_form.is_valid():
+                group_form.save()
+                return redirect('groups')
+    else:
+        group_form = GroupForm(instance=user_group)
+        profile_picture_form = ProfilePictureForm(instance=user_group)
+
+    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader, 'group_form': group_form, 'profile_picture_form': profile_picture_form})

@@ -16,6 +16,7 @@ class Group(models.Model):
     members = models.ManyToManyField(User, related_name='member_list', through='GroupMembership')
     leader = models.ForeignKey(User, related_name='led_groups', on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.IntegerField(default=0)
+    profile_picture = models.ImageField(upload_to='group_pics/', null=True, blank=True, default= 'img/profile.png')
 
     def __str__(self):
         return self.name 

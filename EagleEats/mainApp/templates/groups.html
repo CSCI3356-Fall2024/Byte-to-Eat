@@ -9,7 +9,7 @@
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <div style="display:flex; align-items:center;">
                     {% if user_group.profile_picture %}
-                        <img id="group-profile-picture" src="{{ user_group.profile_picture.url }}" alt="{{ user_group.name }}'s profile picture"
+                        <img id="group-profile-picture" src="{{ user_group.profile_picture.url }}"
                              class="rounded-circle img-thumbnail"
                              style="width: 250px; height: 250px; object-fit: cover;">
                     {% else %}
@@ -18,16 +18,16 @@
                              style="width: 250px; height: 250px; object-fit: cover;">
                     {% endif %}
                     {% if is_leader %}
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="post" enctype="multipart/form-data" style="margin-left: 10px;" id="profile-picture-form">
                             {% csrf_token %}
                             <label for="profile_picture">
                                 <img id="edit-icon" src="{% static 'img/edit-icon.png' %}" alt="Edit" class="profile-edit-icon" style="cursor:pointer; width:20px; height:20px;">
                             </label>
-                            <input type="file" name="profile_picture" id="profile_picture" style="display:none;" accept=".jpg, .jpeg, .png, .gif">
+                            <input type="file" name="profile_picture" id="profile_picture" style="display:none;" accept=".jpg, .jpeg, .png, .gif" onchange="document.getElementById('profile-picture-form').submit();">
                         </form>
                     {% endif %}
                         <div style="margin-left:30px;">
-                            <h1><b>{{ user_group.name }}</b></h1>
+                            <b>{{ user_group.name }}</b>
                         </div>
                     </div>
                 <div style="margin-left: auto; text-align: right;">
