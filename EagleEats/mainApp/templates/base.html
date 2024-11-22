@@ -187,8 +187,7 @@
 
       <a class="nav-link profile-link" href="{% url 'profile' %}">
         <div class="profile-icon">
-          <img src="{% static 'img/profile.png' %}" alt="Default Profile Icon" />
-        </div>
+          <img id="profileIcon" src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'img/profile.png' %}{% endif %}" alt="Profile Icon" style="width: 50px; height: 50px; object-fit: cover;">        </div>
       </a>
 
       <div class="navbar-bottom-bar"></div>
