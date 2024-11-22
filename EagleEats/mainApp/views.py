@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Campaign, Transaction, Group, GroupMembership, GroupInvitation
+from .models import Profile, Campaign, Group, GroupMembership, GroupInvitation
 from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
@@ -71,7 +71,7 @@ def profile(request):
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('/')  # Redirect to the homepage after updating the profile
+           
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'profile.html', {'form': form, 'profile': profile})
@@ -167,17 +167,16 @@ def campaigns(request):
 @login_required
 @admin_required
 def edit_campaign(request, campaign_id):
-    campaign = get_object_or_404(Campaign, id=campaign_id)
-    print(request.method)
+    campaign = Campaign.objects.get(campaign_id=campaign_id)
     if request.method == 'POST':
-        if 'save_campaign' in request.POST:
+        if 'save_changes' in request.POST['action']:
             form = CampaignForm(request.POST, request.FILES, instance=campaign)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Campaign updated successfully.')
                 return redirect('campaigns')
         
-        elif 'delete_campaign' in request.POST:
+        elif 'delete_campaign' in request.POST['action']:
             campaign.delete()
             messages.success(request, 'Campaign deleted successfully.')
             return redirect('campaigns')

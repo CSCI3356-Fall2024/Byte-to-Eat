@@ -7,7 +7,7 @@ __pycache__/
 **/migrations/
 **/migrations/*.py
 **/migrations/*.pyc
-
+**/media/
 # C extensions
 *.so
 
