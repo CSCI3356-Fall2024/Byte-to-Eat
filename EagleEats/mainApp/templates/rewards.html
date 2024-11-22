@@ -1,119 +1,299 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block content %}
-<h1>Rewards</h1>
 
-<div>
-    <h2>Redeem a Reward</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ redeem_form.as_p }}
-        <button type="submit" class="btn btn-primary">Redeem</button>
-    </form>
+{% block content %}
+<div class="container">
+    <!-- Points Progress Section -->
+    <div class="progress-container">
+        <!-- Display current points in an oval -->
+        <div class="points-oval">
+            <span>{{ current_points }} pts</span>
+        </div>
+
+        <!-- Growth Progress Bar -->
+        <div class="growth-bar-container">
+            <div class="progress-bar">
+                <div class="growth" id="growthBar" style="width: 0;"></div>
+            </div>
+        
+            <!-- Plants for each milestone -->
+            <div class="plants-container">
+                <div class="plant-stage" style="left: 25%;" id="plant1">
+                    <img src="{% static 'img/sprout1.png' %}" alt="Sprout 1">
+                </div>
+                <div class="plant-stage" style="left: 50%;" id="plant2">
+                    <img src="{% static 'img/sprout2.png' %}" alt="Sprout 2">
+                </div>
+                <div class="plant-stage" style="left: 75%;" id="plant3">
+                    <img src="{% static 'img/sprout3.png' %}" alt="Sprout 3">
+                </div>
+                <div class="plant-stage" style="left: 100%;" id="plant4">
+                    <img src="{% static 'img/sprout4.png' %}" alt="Sprout 4">
+                </div>
+            </div>
+        
+            <!-- Points Markers -->
+            <div class="point-markers">
+                <span>1000</span>
+                <span>1500</span>
+                <span>2000</span>
+                <span>2500</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rewards Grid -->
+    <div class="rewards-grid">
+        <!-- 1000 Points Section -->
+        <div class="points-section">
+            <div class="points-header {% if current_points >= 1000 %}active{% endif %}">
+                1000 pts
+            </div>
+            <div class="rewards-list">
+                {% for reward in rewards_1000 %}
+                <div class="reward-item {% if current_points < 1000 %}locked{% endif %}">
+                    <h3>{{ reward.title }}</h3>
+                    {% if current_points >= 1000 %}
+                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 1500 Points Section -->
+        <div class="points-section">
+            <div class="points-header {% if current_points >= 1500 %}active{% endif %}">
+                1500 pts
+            </div>
+            <div class="rewards-list">
+                {% for reward in rewards_1500 %}
+                <div class="reward-item {% if current_points < 1500 %}locked{% endif %}">
+                    <h3>{{ reward.title }}</h3>
+                    {% if current_points >= 1500 %}
+                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 2000 Points Section -->
+        <div class="points-section">
+            <div class="points-header {% if current_points >= 2000 %}active{% endif %}">
+                2000 pts
+            </div>
+            <div class="rewards-list">
+                {% for reward in rewards_2000 %}
+                <div class="reward-item {% if current_points < 2000 %}locked{% endif %}">
+                    <h3>{{ reward.title }}</h3>
+                    {% if current_points >= 2000 %}
+                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 2500 Points Section -->
+        <div class="points-section">
+            <div class="points-header {% if current_points >= 2500 %}active{% endif %}">
+                2500 pts
+            </div>
+            <div class="rewards-list">
+                {% for reward in rewards_2500 %}
+                <div class="reward-item {% if current_points < 2500 %}locked{% endif %}">
+                    <h3>{{ reward.title }}</h3>
+                    {% if current_points >= 2500 %}
+                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 
-<main class="container my-5">
-    <style>
-        .campaign-card img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            opacity: 0.5;
-        }
-
-        .campaign-card .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .no-image-title {
-            height: 200px;
-            background-color: #d4e9d4;
-            color: #66723D;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-    </style>
-
-    <h2 class="text-center mb-4" style="font-size: 2rem; color: #66843a;">Rewards</h2>
-
-    <!-- Active Challenges Section -->
-    <section>
-        <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active Challenges</h3>
-        <div class="row">
-            {% for reward in available_rewards %}
-                <div class="col-md-4 mb-3">
-                    <div class="campaign-container" style="position: relative;">
-                        <div class="card campaign-card" style="border: none; background-color: #f2f2f2;">
-                            {% if reward.campaign_picture %}
-                                <img src="{{ reward.campaign_picture.url }}" class="card-img-top" alt="{{ reward.title }}">
-                                <div class="overlay">{{ reward.title }}</div> <!-- Title over the image -->
-                            {% else %}
-                                <img src="{% static 'img/eagle.png' %}" class="card-img-top" alt="{{ reward.title }}">
-                                <div class="overlay">{{ reward.title }}</div> <!-- Title over the image -->
-                            {% endif %}
-                        </div>
-                        <!-- Dropdown section -->
-                        <div class="campaign-details" style="display: none; background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; position: absolute; top: 110%; left: 0; width: 100%; z-index: 10; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-                            <p style="color:#66723D"><strong>{{ reward.title }}</strong></p>
-                            <p><strong>Individual Points:</strong> {{ reward.individual_points }} pts</p>
-                            <p><strong>Group Points:</strong> {{ reward.group_points }} pts</p>
-                            <p><strong>Active:</strong> {{ reward.start_date|date:"F j, Y" }} - {{ reward.end_date|date:"F j, Y" }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% empty %}
-                <p class="text-center">No active rewards at the moment.</p>
-            {% endfor %}
-        </div>
-    </section>
-</main>
-
 <style>
-    .campaign-container {
+    /* Container for progress and rewards */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Progress Bar Styles */
+    .progress-container {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    /* Display current points */
+    .points-display {
+        margin-bottom: 20px;
+    }
+
+    .current-points {
+        font-size: 24px;
+        font-weight: bold;
+        background-color: #789E4E;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    /* Growth Bar Container */
+    .growth-bar-container {
+        padding: 20px;
+        border: 2px solid #789E4E;
+        border-radius: 10px;
+        background: white;
+        margin-top: 30px;
+        position: relative; /* To position plants above the bar */
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+        width: 100%;
+        height: 20px;
+        background-color: #e0e0e0;
+        border-radius: 10px;
         position: relative;
+        overflow: hidden; /* Ensure smooth growth */
     }
 
-    .campaign-card {
+    .growth {
+        height: 100%;
+        background-color: #789E4E;
+        transition: width 0.5s ease; /* Smooth width adjustment */
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    /* Plants */
+    .plants-container {
+        position: absolute;
+        top: -50px; /* Adjust higher or lower as needed */
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+    }
+
+    .plant-stage {
+        width: 50px;
+        height: auto;
+        opacity: 0; /* Start invisible */
+        transition: opacity 0.5s ease; /* Smooth visibility change */
+        position: relative;
+        transform: translateX(-50%); /* Center plant on milestone */
+    }
+
+    .plant-stage img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Threshold Points Markers */
+    .point-markers {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding: 0 10px;
+    }
+
+    .point-markers span {
+        color: #789E4E;
+        font-weight: bold;
+    }
+
+    /* Rewards Grid */
+    .rewards-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .points-section {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .points-header {
+        background: #ccc;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .points-header.active {
+        background: #789E4E;
+    }
+
+    .rewards-list {
+        padding: 15px;
+    }
+
+    .reward-item {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .reward-item.locked {
+        opacity: 0.5;
+        background: #f5f5f5;
+    }
+
+    .redeem-btn {
+        background: #789E4E;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 5px;
         cursor: pointer;
-        transition: transform 0.3s ease;
     }
 
-    .campaign-card:hover {
-        transform: scale(1.05);
+    .redeem-btn:hover {
+        background: #6a8c45;
     }
 
-    .campaign-container:hover .campaign-details {
-        display: block !important;
-    }
-
-    .campaign-details {
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .locked .redeem-btn {
+        display: none;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const growthBar = document.getElementById('growthBar');
+        const growthPercentage = {{ growth_percentage }}; // Get percentage from Django
+
+        // Set the width of the progress bar
+        growthBar.style.width = `${growthPercentage}%`;
+
+        // Show plants based on points
+        const currentPoints = {{ current_points }};
+        const thresholds = [1000, 1500, 2000, 2500];
+
+        thresholds.forEach((threshold, index) => {
+            const plant = document.getElementById(`plant${index + 1}`);
+            if (currentPoints >= threshold) {
+                plant.style.opacity = 1; // Show the plant
+            } else {
+                plant.style.opacity = 0; // Hide the plant
+            }
+        });
+    });
+
+    function redeemReward(campaignId) {
+        document.getElementById('id_campaign').value = campaignId;
+        document.getElementById('redeem-form').submit();
+    }
+</script>
 {% endblock %}
