@@ -65,12 +65,14 @@
                         {% endif %}
                     {% endfor %}
                 </tbody>
-                <tfoot>
-                    <tr class="highlight">
-                        <td style="text-align: left;"> {{profile.group.rank }}) {{ profile.group.name }}</td>
-                        <td style="text-align: right;">{{ profile.group.points }}</td>
-                    </tr>
-                </tfoot>
+                {% if profile.group %}
+                    <tfoot>
+                        <tr class="highlight">
+                            <td style="text-align: left;"> {{profile.group.rank }}) {{ profile.group.name }}</td>
+                            <td style="text-align: right;">{{ profile.group.points }}</td>
+                        </tr>
+                    </tfoot>
+                {% endif %}
             </table>
         </div>
     </div>
