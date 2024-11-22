@@ -99,12 +99,39 @@ def rewards(request):
     profile = request.user.profile
     today = timezone.now()
     
-    # Get available rewards
-    available_rewards = Campaign.objects.filter(
+    # Get rewards for each point threshold
+    rewards_1000 = Campaign.objects.filter(
         campaign_type='redeem',
+        individual_points=1000,
         start_date__lte=today,
         end_date__gte=today
-    ).order_by('-start_date')
+    )
+    
+    rewards_1500 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=1500,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+    
+    rewards_2000 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=2000,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+    
+    rewards_2500 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=2500,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+
+    # Calculate plant growth based on user's current points
+    max_points = 2500
+    current_points = profile.current_points
+    growth_percentage = (current_points / max_points) * 100 if current_points <= max_points else 100
 
     # Instantiate the RedeemForm
     redeem_form = RedeemForm()
@@ -118,8 +145,13 @@ def rewards(request):
 
     context = {
         'profile': profile,
-        'available_rewards': available_rewards,
-        'redeem_form': redeem_form,
+        'rewards_1000': rewards_1000,
+        'rewards_1500': rewards_1500,
+        'rewards_2000': rewards_2000,
+        'rewards_2500': rewards_2500,
+        'growth_percentage': growth_percentage,
+        'current_points': current_points,
+        'redeem_form': redeem_form
     }
     return render(request, 'rewards.html', context)
 
