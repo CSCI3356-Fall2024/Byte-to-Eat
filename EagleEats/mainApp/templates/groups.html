@@ -1,13 +1,42 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>Your Group</h1>
 {% if user_group %}
     <div class="group-border">
         <div class="group-info">
-            <h3 style="text-align: right;"><b>{{ user_group.points }} pts</b></h3>
-            <h4>{{ user_group.name }}</h4>
+            <div style="display:flex; align-items: center; justify-content: space-between;">
+                <div style="display:flex; align-items:center;">
+           
+                    {% if user_group.profile_picture %}
+                        <img id="group-profile-picture" src="{{ user_group.profile_picture.url }}" alt="{{ user_group.name }}'s profile picture"
+                             class="rounded-circle img-thumbnail"
+                             style="width: 250px; height: 250px; object-fit: cover;">
+                    {% else %}
+                        <img id="group-profile-picture" src="{% static 'img/profile.png' %}" alt="Default Group Picture"
+                             class="rounded-circle img-thumbnail"
+                             style="width: 250px; height: 250px; object-fit: cover;">
+                    {% endif %}
+                    {% if is_leader %}
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <label for="profile_picture"><img id="edit-icon" src="{% static 'img/edit-icon.png' %}" alt="Edit" class="profile-edit-icon" style="cursor:pointer; width:20px; height:20px;">
+                            </label>
+                            <input type="file" name="profile_picture" id="profile_picture" style="display:none;">
+                            <button type="submit">Save</button>
+                        </form>
+                    {% endif %}
+                        <div style="margin-left:10px;">
+                            <h1><b>{{ user_group.name }}</b></h1>
+                        </div>
+                    </div>
+                <div>
+                    <h1><b>{{ user_group.points }} pts</b><h1>
+                </div>
+            </div>
         </div>
+
         <div class="member-box">
             <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader)</small></span>
             <span class="points">{{ user_group.leader.profile.lifetime_points }} pts</span>
@@ -233,6 +262,35 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .rounded-circle.img-thumbnail {
+        border: 4px solid #6f8f40;
+        padding: 3px;
+    }
+
+    .profile-edit-icon {
+        position: absolute;
+        right: -40px;
+        top: 20%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .profile-edit-icon img {
+        width: 25px;
+        height: 25px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .profile-edit-icon:hover img {
+        opacity: 1;
     }
 </style>
 
