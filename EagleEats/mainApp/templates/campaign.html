@@ -63,7 +63,7 @@
                                 <td style="padding: 15px;">
                                     <a href="#" style="text-decoration: underline; color: #66723D;"
                                         data-bs-toggle="modal" data-bs-target="#editCampaignModal"
-                                        onclick="loadCampaignData('{{ campaign.id }}')">
+                                        onclick="loadCampaignData('{{ campaign.campaign_id }}')">
                                         <span style="white-space: nowrap;">Edit</span>
                                     </a>
                                 </td>
@@ -110,7 +110,7 @@
                                 <td style="padding: 15px;">
                                     <a href="#" style="text-decoration: underline; color: #66723D;"
                                     data-bs-toggle="modal" data-bs-target="#editCampaignModal"
-                                    onclick="loadCampaignData('{{ campaign.id }}')">
+                                    onclick="loadCampaignData('{{ campaign.campaign_id }}')">
                                     <span style="white-space: nowrap;">Edit</span>
                                 </a>
                                 </td>
@@ -139,6 +139,7 @@
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ campaign_form.as_p }}
+                        {{ campaign_form.campaign_id.as_hidden }}
                         <button type="submit" name="save_campaign" style="background-color:#66723D " class="btn btn-primary">Save Campaign</button>
                     </form>
                 </div>
@@ -157,8 +158,9 @@
                     <form id="editCampaignForm" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ campaign_form.as_p }}
-                        <button type="submit" name="save_campaign" style="background-color:#66723D" class="btn btn-primary">Save Changes</button>
-                        <button type="submit" name="delete_campaign" style="background-color:red" class="btn btn-danger">Delete Campaign</button>
+                        <button type="button" name="campaign_id" hidden="True"></button>
+                        <button type="button" id="saveChanges" name="save_changes" style="background-color:#66723D" class="btn btn-primary">Save Changes</button>
+                        <button type="button" id="deleteCampaign" name="delete_campaign" style="background-color:red" class="btn btn-danger">Delete Campaign</button>
                     </form>
                 </div>
             </div>
@@ -171,25 +173,47 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
 <script>
-    function loadCampaignData(campaignId) {
-    campaignId = parseInt(campaignId, 10); // Convert to integer if needed
+    document.getElementById('saveChanges').addEventListener('click', function() {
+        const campaignId = document.querySelector('#editCampaignForm [name="campaign_id"]').value;
+        submitForm('save_changes', campaignId);
+    });
 
-    fetch(`/edit-campaign/${campaignId}/`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);  // Log data to verify the response
-            document.querySelector('#editCampaignForm [name="title"]').value = data.title;
-            document.querySelector('#editCampaignForm [name="description"]').value = data.description;
-            document.querySelector('#editCampaignForm [name="start_date"]').value = data.start_date;
-            document.querySelector('#editCampaignForm [name="end_date"]').value = data.end_date;
-            document.querySelector('#editCampaignForm [name="individual_points"]').value = data.individual_points;
-            document.querySelector('#editCampaignForm [name="group_points"]').value = data.group_points;
-            document.querySelector('#editCampaignForm [name="campaign_type"]').value = data.campaign_type;
-            document.querySelector('#editCampaignForm [name="campaign_id"]').value = data.campaign_id;
-            // Update the form action URL
-            document.querySelector('#editCampaignForm').action = `/edit-campaign/${campaignId}/`;
+    document.getElementById('deleteCampaign').addEventListener('click', function() {
+        const campaignId = document.querySelector('#editCampaignForm [name="campaign_id"]').value;
+        submitForm('delete_campaign', campaignId);
+    });
+
+    function submitForm(action, campaignId) {
+        const formData = new FormData(document.getElementById('editCampaignForm'));
+        formData.append('action', action);
+
+        fetch(`/edit-campaign/${campaignId}/`, {
+            method: 'POST',
+            body: formData
         })
-        .catch(error => console.error('Error loading campaign data:', error));
+        .then()
+        .then(data => { 
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    function loadCampaignData(campaignId) {
+        fetch(`/edit-campaign/${campaignId}/`)
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('#editCampaignForm [name="title"]').value = data.title;
+                document.querySelector('#editCampaignForm [name="description"]').value = data.description;
+                document.querySelector('#editCampaignForm [name="start_date"]').value = data.start_date;
+                document.querySelector('#editCampaignForm [name="end_date"]').value = data.end_date;
+                document.querySelector('#editCampaignForm [name="individual_points"]').value = data.individual_points;
+                document.querySelector('#editCampaignForm [name="group_points"]').value = data.group_points;
+                document.querySelector('#editCampaignForm [name="campaign_type"]').value = data.campaign_type;
+                document.querySelector('#editCampaignForm [name="campaign_id"]').value = data.campaign_id;
+                document.querySelector('#editCampaignForm').action = `/edit-campaign/${campaignId}/`;
+            })
+            .catch(error => console.error('Error loading campaign data:', error));
 }
 
 </script>

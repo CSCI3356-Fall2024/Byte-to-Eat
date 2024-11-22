@@ -167,17 +167,16 @@ def campaigns(request):
 @login_required
 @admin_required
 def edit_campaign(request, campaign_id):
-    campaign = get_object_or_404(Campaign, id=campaign_id)
-    print(request.method)
+    campaign = Campaign.objects.get(campaign_id=campaign_id)
     if request.method == 'POST':
-        if 'save_campaign' in request.POST:
+        if 'save_changes' in request.POST['action']:
             form = CampaignForm(request.POST, request.FILES, instance=campaign)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Campaign updated successfully.')
                 return redirect('campaigns')
         
-        elif 'delete_campaign' in request.POST:
+        elif 'delete_campaign' in request.POST['action']:
             campaign.delete()
             messages.success(request, 'Campaign deleted successfully.')
             return redirect('campaigns')
