@@ -57,15 +57,17 @@
         {% endfor %}        
         <div class="invite-field">
             {% if is_leader %}
-                <form method="post" action="{% url 'invite_to_group' user_group.id %}">
-                    {% csrf_token %}
-                    <input type="text" name="username" placeholder="Username to invite">
-                    <button type="submit">Invite</button>
-                </form>
-                <form method="post" action="{% url 'delete_group' user_group.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Delete Group</button>
-                </form>
+                <div style="display: flex; justify-content: space-between;">
+                    <form method="post" action="{% url 'invite_to_group' user_group.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="username" placeholder="Username to invite">
+                        <button type="submit">Invite</button>
+                    </form>
+                    <form method="post" action="{% url 'delete_group' user_group.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete Group</button>
+                    </form>
+                </div>
             {% else %}
                 <form method="post" action="{% url 'leave_group' user_group.id %}">
                     {% csrf_token %}
