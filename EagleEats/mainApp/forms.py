@@ -25,13 +25,15 @@ class RedeemForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        current_points = kwargs.pop('current_points', 0)  # Get current_points from kwargs
         super().__init__(*args, **kwargs)
-        # Filter campaigns to show only active redeem campaigns
         today = timezone.now()
+        # Filter campaigns to show only active redeem campaigns the user can afford
         self.fields['campaign'].queryset = Campaign.objects.filter(
             campaign_type='redeem',
             start_date__lte=today,
-            end_date__gte=today
+            end_date__gte=today,
+            individual_points__lte=current_points  # Only campaigns within the user's budget
         )
 
     def save(self, user, commit=True):
@@ -42,6 +44,7 @@ class RedeemForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
 
 
 class TransactionForm(forms.ModelForm):

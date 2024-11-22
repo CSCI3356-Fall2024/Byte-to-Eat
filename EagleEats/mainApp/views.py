@@ -140,7 +140,7 @@ def rewards(request):
     growth_percentage = (current_points / max_points) * 100 if current_points <= max_points else 100
 
     # Instantiate the RedeemForm
-    redeem_form = RedeemForm()
+    redeem_form = RedeemForm(current_points=current_points)
 
     if request.method == 'POST':
         redeem_form = RedeemForm(request.POST)
