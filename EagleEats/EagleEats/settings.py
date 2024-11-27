@@ -26,10 +26,9 @@ LOGOUT_REDIRECT_URL = '/'
 SECRET_KEY = 'django-insecure-o5y5zdbr*4nb4_8iup$18wb&^ce3k2zmaslsa23$#7@1n^=m4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['byte-to-eat.onrender.com']
-
+ALLOWED_HOST = ['*']
 
 # Application definition
 
@@ -55,6 +54,7 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,15 +110,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'EagleEats.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import dj_database_url
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Replace the SQLite DATABASES configuration with PostgreSQL:
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            # Replace this value with your local database's connection string.
+            default='postgresql://byte_to_eat_db_user:tQ86VE26wm1imoerjv9YlcIuRIvcBFcB@dpg-ct3aflt2ng1s739pmqmg-a/byte_to_eat_db',
+            conn_max_age=600
+        )
+    }
 
 
 # Password validation
@@ -155,8 +164,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -165,3 +172,22 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+import os
+
+# This setting informs Django of the URI path from which your static files will be served to users
+# Here, they well be accessible at your-domain.onrender.com/static/... or yourcustomdomain.com/static/...
+STATIC_URL = '/static/'
+# This production code might break development mode, so we check whether we're in DEBUG mode
+if not DEBUG:    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT =os.path.join(BASE_DIR, 'staticfiles')
