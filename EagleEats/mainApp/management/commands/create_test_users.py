@@ -149,7 +149,7 @@ class Command(BaseCommand):
 
         for profile in Profile.objects.all():
             profile.current_points = random.randint(1000, 10000)
-            profile.lifetime_points = random.randint(profile.lifetime_points, profile.lifetime_points + 10000)
+            profile.lifetime_points = random.randint(profile.current_points, profile.current_points + 10000)
             profile.save()
 
         for group in Group.objects.all():
