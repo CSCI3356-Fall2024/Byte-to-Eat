@@ -9,6 +9,9 @@ pip install -r requirements.txt
 python manage.py collectstatic --no-input
 
 python manage.py makemigrations
+python manage.py create_test_campaigns
+python manage.py create_test_users
+python manage.py createsuperuser --username admin --email swe.bte123@gmail.com --noinput
 # Apply any outstanding database migrations
 python manage.py migrate
 
