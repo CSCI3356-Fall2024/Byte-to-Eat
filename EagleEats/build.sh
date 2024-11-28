@@ -12,9 +12,4 @@ python manage.py makemigrations
 # Apply any outstanding database migrations
 python manage.py migrate
 
-python manage.py wipe_database
-python manage.py create_test_campaigns
-python manage.py create_test_users
-python manage.py createsuperuser --username admin --email swe.bte123@gmail.com --noinput
-
 cd EagleEats
