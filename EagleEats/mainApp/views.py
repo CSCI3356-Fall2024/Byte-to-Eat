@@ -74,6 +74,10 @@ def profile(request):
            
     else:
         form = ProfileForm(instance=profile)
+    if profile.user_type == 'admin':
+        profile.user.is_staff = True
+        profile.user.is_superuser = True
+        profile.user.save()
     return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 @login_required

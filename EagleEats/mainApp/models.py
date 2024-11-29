@@ -150,9 +150,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    if instance.profile.user_type == 'admin':
-        instance.profile.user.is_staff = True
-        instance.profile.user.is_superuser = True
     instance.profile.save()
 
 class GroupInvitation(models.Model):
