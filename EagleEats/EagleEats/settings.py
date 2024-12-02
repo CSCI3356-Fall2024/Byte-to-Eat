@@ -86,6 +86,10 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
 )
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://byte-to-eat.onrender.com/'
+]
+
 LOGIN_REDIRECT_URL = '/post-login/'
 
 ROOT_URLCONF = 'EagleEats.urls'
