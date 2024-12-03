@@ -3,6 +3,95 @@ from .models import Profile, Group, Transaction, Campaign
 from django.utils import timezone
 
 class ProfileForm(forms.ModelForm):
+    MAJOR_CHOICES = [
+        # Morrisey College of Arts and Sciences
+        ('AAD', 'African and African Diaspora Studies'),
+        ('APH', 'Applied Physics'),
+        ('AH', 'Art History'),
+        ('BCH', 'Biochemistry'),
+        ('BIO', 'Biology'),
+        ('CHM', 'Chemistry'),
+        ('CLS', 'Classics'),
+        ('COM', 'Communication'),
+        ('CS', 'Computer Science'),
+        ('ECON', 'Economics'),
+        ('ENG', 'English'),
+        ('ENVG', 'Environmental Geoscience'),
+        ('ENVS', 'Environmental Studies'),
+        ('FILM', 'Film Studies'),
+        ('FREN', 'French'),
+        ('GEO', 'Geological Sciences'),
+        ('GER', 'German Studies'),
+        ('HISP', 'Hispanic Studies'),
+        ('HIST', 'History'),
+        ('ENGR', 'Human-Centered Engineering'),
+        ('IND', 'Independent'),
+        ('IS', 'International Studies'),
+        ('ICS', 'Islamic Civilization and Societies'),
+        ('ITAL', 'Italian'),
+        ('LING', 'Linguistics'),
+        ('MATH', 'Mathematics'),
+        ('MUS', 'Music'),
+        ('NEURO', 'Neuroscience'),
+        ('PHIL', 'Philosophy'),
+        ('PHYS', 'Physics'),
+        ('POLI', 'Political Science'),
+        ('PSY', 'Psychology'),
+        ('RUS', 'Russian'),
+        ('SLAV', 'Slavic Studies'),
+        ('SOC', 'Sociology'),
+        ('ART', 'Studio Art'),
+        ('THEA', 'Theatre'),
+        ('THEO', 'Theology'),
+        # Lynch School of Education and Human Development
+        ('AH', 'American Heritage'),
+        ('APHD', 'Applied Psychology and Human Development'),
+        ('EDU', 'Elementary Education'),
+        ('MATH_CS', 'Mathematics/Computer Science'),
+        ('PSA', 'Perspectives on Spanish America'),
+        ('SED', 'Secondary Education'),
+        ('TES', 'Transformative Educational Studies'),
+        # Carroll School of Management
+        ('ACCT', 'Accounting'),
+        ('AFC', 'Accounting for Finance and Consulting'),
+        ('BUS_ANL', 'Business Analytics'),
+        ('ENT', 'Entrepreneurship'),
+        ('FIN', 'Finance'),
+        ('GEN_MGT', 'General Management'),
+        ('MGT_LDR', 'Management and Leadership'),
+        ('MKT', 'Marketing'),
+        ('OPS_MGT', 'Operations Management'),
+        # Connell School of Nursing
+        ('GPH', 'Global Public Health and the Common Good'),
+        ('NURS', 'Nursing'),
+        # Woods College of Advancing Studies
+        ('ALA', 'Applied Liberal Arts'),
+        ('ENG_WC', 'English'),
+        ('HIST_WC', 'History'),
+        ('IDS', 'Interdisciplinary Studies'),
+        ('PHIL_WC', 'Philosophy'),
+        ('POLI_WC', 'Political Science'),
+        ('SOC_WC', 'Sociology'),
+        ('BUS_WC', 'Business'),
+        ('CSJ', 'Criminal and Social Justice'),
+        ('CYBER', 'Cybersecurity'),
+        ('DGC', 'Digital Communications'),
+        ('ECON_WC', 'Economics'),
+        ('IT', 'Information Technology'),
+        ('PSY_WC', 'Psychology'),
+        # Messina College
+        ('ADS', 'Applied Data Science'),
+        ('APHD_M', 'Applied Psychology and Human Development'),
+        ('GBUS', 'General Business'),
+        ('HS', 'Health Sciences'),
+            ]
+
+    major = forms.ChoiceField (
+        choices=[('', 'Select your major')] + MAJOR_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['major'].required = True
