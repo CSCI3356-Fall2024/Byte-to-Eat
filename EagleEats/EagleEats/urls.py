@@ -25,8 +25,6 @@ urlpatterns = [
     path('group/<int:group_id>/leave/', views.leave_group, name='leave_group'),
     path('group/<int:group_id>/delete/', views.delete_group, name='delete_group'),
     path('edit-campaign/<str:campaign_id>/', views.edit_campaign, name='edit_campaign'),
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
