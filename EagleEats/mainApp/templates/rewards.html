@@ -4,6 +4,12 @@
 {% block content %}
 <div>
     <h2>Redeem a Reward</h2>
+    <h6>*Note: Points will reset on the last day of finals</h6>
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         {{ redeem_form.as_p }}
@@ -91,9 +97,6 @@
                 {% for reward in rewards_2000 %}
                 <div class="reward-item {% if current_points < 2000 %}locked{% endif %}">
                     <h3>{{ reward.title }}</h3>
-                    {% if current_points >= 2000 %}
-                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
-                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -108,9 +111,6 @@
                 {% for reward in rewards_2500 %}
                 <div class="reward-item {% if current_points < 2500 %}locked{% endif %}">
                     <h3>{{ reward.title }}</h3>
-                    {% if current_points >= 2500 %}
-                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
-                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
