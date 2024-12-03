@@ -40,8 +40,7 @@ class Group(models.Model):
 class Profile(models.Model):
     USER_TYPES = [
         ('student', 'Student'),
-        ('mod', 'Moderator'),
-        ('admin', 'Admin'),
+        ('admin', 'Supervisor'),
     ]
     
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)

@@ -26,7 +26,6 @@ urlpatterns = [
     path('group/<int:group_id>/delete/', views.delete_group, name='delete_group'),
     path('edit-campaign/<str:campaign_id>/', views.edit_campaign, name='edit_campaign'),
     path('reset-group-challenge/', views.reset_group_challenge, name='reset_group_challenge'),
-
 ]
 
 if settings.DEBUG:

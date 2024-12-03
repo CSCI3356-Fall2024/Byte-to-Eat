@@ -154,6 +154,18 @@ def rewards(request):
             redeem_form.save(user=request.user)
             return redirect('rewards')  # Reload the page to show updated data
 
+        # Instantiate the RedeemForm with current_points
+    if request.method == 'POST':
+        redeem_form = RedeemForm(request.POST, current_points=current_points)
+        if redeem_form.is_valid():
+            # Save the form and associate it with the logged-in user
+            redeem_form.save(user=request.user)
+            return redirect('rewards')  # Reload the page to show updated data
+        else:
+            error_message = "There was an error redeeming the reward. Please try again."
+    else:
+        redeem_form = RedeemForm(current_points=current_points)
+
     context = {
         'profile': profile,
         'available_rewards': available_rewards,
@@ -163,7 +175,9 @@ def rewards(request):
         'rewards_2500': rewards_2500,
         'growth_percentage': growth_percentage,
         'current_points': current_points,
-        'redeem_form': redeem_form
+        'redeem_form': redeem_form,
+        'error_message': error_message if 'error_message' in locals() else None,
+
     }
     return render(request, 'rewards.html', context)
 
