@@ -86,10 +86,11 @@ class ProfileForm(forms.ModelForm):
         ('HS', 'Health Sciences'),
             ]
 
-    major = forms.ChoiceField (
+
+    second_major = forms.ChoiceField (
         choices=[('', 'Select your major')] + MAJOR_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}),
-        required=True,
+        required=False,
     )
 
     def __init__(self, *args, **kwargs):
@@ -100,7 +101,7 @@ class ProfileForm(forms.ModelForm):
         
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'major', 'school', 'graduation_year', 'eagle_id', 'user_type']
+        fields = ['profile_picture', 'major', 'second_major','school', 'graduation_year', 'eagle_id', 'user_type']
         widgets = {
             'user_type': forms.Select(attrs={'class': 'form-control'}),
         }
