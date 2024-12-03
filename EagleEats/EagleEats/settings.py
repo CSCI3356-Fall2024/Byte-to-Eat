@@ -202,3 +202,7 @@ if not DEBUG:    # Tell Django to copy static assets into a path called `staticf
 
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+##default weekly group challenge points
+GROUP_CHALLENGE_POINTS = 500

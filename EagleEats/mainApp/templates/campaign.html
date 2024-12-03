@@ -127,6 +127,37 @@
         </div>
     </section>
 
+    <!-- Weekly Group Challenge -->
+    <section>
+        <h4 class="mb-3" style="font-size: 1rem; color: white; margin-top: 50px; background-color: #66723D; padding: 20px">Weekly Group Challenge</h4>
+        <div style="background-color: #f2f2f2; padding: 20px">
+            <div style="display: flex; justify-content: space-between;">
+                <p>The weekly group challenge is currently worth<strong>{{ settings.GROUP_CHALLENGE_POINT }}</strong> points.</p>
+                <form method="post" action="{% url 'reset_group_challenge' %}">
+                    {% csrf_token %}
+                    <button type="submit" style="background-color:red" class="btn btn-danger">Reset Group Challenge</button>
+                </form>
+            </div>
+        </div>
+
+
+
+        <div class="card" style="border: none;">
+            <div style="max-height: 300px; overflow-y: auto;"> <!-- Scrollable container for inactive campaigns -->
+                <table class="table">
+                    <thead>
+                        <tr style="background-color: #66723D; color: white;">
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: #f2f2f2;">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
     <!-- Campaign Modal for Adding New Campaign -->
     <div class="modal fade" id="campaignModal" tabindex="-1" aria-labelledby="campaignModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -167,6 +198,8 @@
         </div>
     </div>
 </main>
+
+
 
 <!-- Bootstrap JavaScript for modal functionality -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
