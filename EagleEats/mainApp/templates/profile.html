@@ -71,6 +71,12 @@
                     </div>
                 </div>
                 <div class="form-group mb-3">
+                    {{ form.second_major|as_crispy_field }}
+                    <div class="edit-icon">
+                        <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
+                    </div>
+                </div>
+                <div class="form-group mb-3">
                     {{ form.school|as_crispy_field }}
                     <div class="edit-icon">
                         <img src="{% static 'img/edit-icon.png' %}" alt="Edit">
