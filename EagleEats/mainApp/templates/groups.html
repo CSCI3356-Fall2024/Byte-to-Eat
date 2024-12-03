@@ -1,36 +1,73 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>Your Group</h1>
 {% if user_group %}
     <div class="group-border">
         <div class="group-info">
-            <h3 style="text-align: right;"><b>{{ user_group.points }} pts</b></h3>
-            <h4>{{ user_group.name }}</h4>
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <div style="display:flex; align-items:center;">
+                    {% if user_group.profile_picture %}
+                        <img id="group-profile-picture" src="{{ user_group.profile_picture.url }}"
+                             class="rounded-circle img-thumbnail"
+                             style="width: 250px; height: 250px; object-fit: cover;">
+                    {% else %}
+                        <img id="group-profile-picture" src="{% static 'img/profile.png' %}" alt="Default Group Picture"
+                             class="rounded-circle img-thumbnail"
+                             style="width: 250px; height: 250px; object-fit: cover;">
+                    {% endif %}
+                    {% if is_leader %}
+                        <form method="post" enctype="multipart/form-data" style="margin-left: 10px;" id="profile-picture-form">
+                            {% csrf_token %}
+                            <label for="profile_picture">
+                                <img id="edit-icon" src="{% static 'img/edit-icon.png' %}" alt="Edit" class="profile-edit-icon" style="cursor:pointer; width:20px; height:20px;">
+                            </label>
+                            <input type="file" name="profile_picture" id="profile_picture" style="display:none;" accept=".jpg, .jpeg, .png, .gif" onchange="document.getElementById('profile-picture-form').submit();">
+                        </form>
+                    {% endif %}
+                        <div style="margin-left:30px;">
+                            <b>{{ user_group.name }}</b>
+                        </div>
+                    </div>
+                <div style="margin-left: auto; text-align: right;">
+                    <h1><b> {{ user_group.points }} pts</b></h1>
+                </div>
+            </div>
         </div>
+
         <div class="member-box">
             <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader)</small></span>
-            <span class="points">{{ user_group.leader.profile.lifetime_points }} pts</span>
+            <span class="points ">{{ user_group.leader.profile.lifetime_points }} pts</span>
         </div>
         {% for member in user_group.members.all %}
             {% if member != user_group.leader %}
-                <div class="member-box">
-                    <span>{{ member.first_name }} {{ member.last_name }}</span>
-                    <span class="points">{{ member.profile.lifetime_points }} pts</span>
-                </div>
+                {% if member == user %}
+                    <div class="member-box highlight">
+                        <span>{{ member.first_name }} {{ member.last_name }}</span>
+                        <span class="points ">{{ member.profile.lifetime_points }} pts</span>
+                    </div>
+                {% else %}
+                    <div class="member-box">
+                        <span>{{ member.first_name }} {{ member.last_name }}</span>
+                        <span class="points ">{{ member.profile.lifetime_points }} pts</span>
+                    </div>
+                {% endif %}
             {% endif %}
         {% endfor %}        
         <div class="invite-field">
             {% if is_leader %}
-                <form method="post" action="{% url 'invite_to_group' user_group.id %}">
-                    {% csrf_token %}
-                    <input type="text" name="username" placeholder="Username to invite">
-                    <button type="submit">Invite</button>
-                </form>
-                <form method="post" action="{% url 'delete_group' user_group.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Delete Group</button>
-                </form>
+                <div style="display: flex; justify-content: space-between;">
+                    <form method="post" action="{% url 'invite_to_group' user_group.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="username" placeholder="Username to invite">
+                        <button type="submit">Invite</button>
+                    </form>
+                    <form method="post" action="{% url 'delete_group' user_group.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete Group</button>
+                    </form>
+                </div>
             {% else %}
                 <form method="post" action="{% url 'leave_group' user_group.id %}">
                     {% csrf_token %}
@@ -40,23 +77,71 @@
         </div>
     </div>
 
+    <h4 style="padding-top: 40px; padding-bottom: 10px;"> Weekly Group Challenge Progress: </h4>
+    <div class="group-border">
+        <div class="group-challenge">
+            <div class="left-column">
+                <div>Every group member must complete a sustainable action...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ completion_percentage }}%;"></div>
+                </div>
+            </div>
+            <div class="right-column">
+                <div>So far ___ group members have been sustainable...</div>
+                <div>___ more to go!</div>
+            </div>
+        </div>
+    </div>
+
 <!-- NOT IN GROUP -->
 {% else %}
-    <p>You are not in a group.</p>
-    <a href="{% url 'create_group' %}">Create a New Group</a>
-    <h2>Invitations</h2>
-    <ul>
-        {% for invitation in invitations %}
-            <li>
-                {{ invitation.group.name }} - Invited by {{ invitation.invited_by.username }}
-                <a href="{% url 'accept_invitation' invitation.id %}">Accept</a>
-                <a href="{% url 'decline_invitation' invitation.id %}">Decline</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="no-group-container">
+        <div class="no-group-message">
+            <h3>Unfortunately, you are not in a group yet...</h3>
+            <h5>Lets change that!</h5>
+        </div>
+
+        <div class="grid-container">
+            <div class="grid-item">
+                <div class="option-title">
+                    <h3>Join a Group</h3>
+                </div>
+                <p> * Accept an invitation from an existing team</p>
+                <p> * Join their effort to be sustainable</p>
+                <p> * Hold each other accountable</p>
+                <p><b>(Your invitations are below)</b></p>
+            </div>
+            <div class="grid-item small-column">
+                <p class="or-text">OR</p>
+            </div>
+            <div class="grid-item">
+                <div class="option-title">
+                    <h3><a href="{% url 'create_group' %}" class="btn-green">Create a New Group +</a></h3>
+                </div>
+                <p> * Send invitations to build your team</p>
+                <p> * Lead your team to be more sustainable</p>
+                <p> * Hold each other accountable</p>
+                <p><b>(Press the + above)</b></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="invitations-container">
+        <div class="invitations">
+            <h2>Invitations</h2>
+            <ul>
+            {% for invitation in invitations %}
+            <div class="invitation-box">
+                <p>{{ invitation.group.name }} - Invited by {{ invitation.invited_by.first_name }} {{ invitation.invited_by.last_name }} ({{ invitation.invited_by.username }})</p>
+                <a href="{% url 'accept_invitation' invitation.id %}" class="accept-btn">Accept</a>
+                <a href="{% url 'decline_invitation' invitation.id %}" class="decline-btn">Decline</a>
+            </div>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endif %}
-
-
 
 <style>
     body {
@@ -75,6 +160,9 @@
         color: #000000;
         border-radius: 10px;
         margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        font-size: xx-large;
     }
     .member-title {
         width: 30%;
@@ -92,6 +180,8 @@
         color: #000000;
         border-radius: 10px;
         margin-bottom: 7px;
+        display: flex;
+        justify-content: space-between;
     }
     .invite-field {
         margin-top: 20px;
@@ -99,7 +189,163 @@
     .points {
         text-align: right;
     }
+    .no-group-message {
+        text-align: center;
+        width: 100%;
+        padding: 20px;
+        background-color: #E6E5E3;
+        border-radius: 10px;
+    }
 
+    .btn-green {
+        display: inline-block;
+        background-color: #E6E5E3; /* Light green color */
+        color: #789E4E;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        padding-left: 20px;
+    }
+    .btn-green:hover {
+        color: #54693e; /* Slightly darker green for hover effect */
+    }
+
+    .invitations-container {
+        display: flex;
+        justify-content: left;
+        align-items: left;
+        margin-top: 50px;
+        padding: 20px;
+        padding-left: 40px;
+        background-color: #E6E5E3;
+        border-radius: 10px;
+    }
+
+    .or-text {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .invitations {
+        text-align: left;
+    }
+
+    .invitation-box {
+        border: 2px solid #789E4E;
+        padding: 15px;
+        margin: 10px auto;
+        border-radius: 5px;
+        max-width: 600px;
+    }
+
+    .invitation-box p {
+        margin: 0 0 10px 0;
+    }
+
+    .accept-btn, .decline-btn {
+        margin: 5px;
+        padding: 5px 10px;
+        background-color: #789E4E;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .accept-btn:hover, .decline-btn:hover {
+        color: #54693e; /* Slightly darker green for hover effect */
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr; /* 'auto' makes the middle column smaller */
+        gap: 20px;
+        padding-top: 50px;
+    }
+
+    .grid-item {
+        padding: 10px;
+        text-align: center;
+        background-color: #E6E5E3;
+        border-radius: 10px;
+    }
+
+    .small-column {
+        width: 100px; /* Adjust this value to make the column smaller */
+        background-color: #789E4E;
+    }
+
+    .no-group-container {
+        width: 100%;
+        padding: 20px;
+        background-color: #789E4E;
+        border-radius: 10px;
+        padding-top: 30px;
+        margin-top: 20px;
+    }
+
+    .option-title {
+        color: #789E4E;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .rounded-circle.img-thumbnail {
+        border: 4px solid #6f8f40;
+        padding: 3px;
+    }
+
+    .profile-edit-icon {
+        cursor: pointer;
+    }
+
+    .profile-edit-icon img {
+        width: 25px;
+        height: 25px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .profile-edit-icon:hover img {
+        opacity: 1;
+    }
+
+    .highlight {
+        background-color: #c2c0be;
+    }
+
+    .group-challenge {
+        width: 100%;
+        padding: 20px;
+        background-color: #E6E5E3;
+        color: #000000;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        font-size: initial;
+        font-weight: normal;
+    }
+
+    .progress-bar {
+        display: flex;
+        margin-top: 10px;
+        padding: 5px; /* Add padding to create space between the border and slots */
+        border: 2px solid #555; /* Dark grey border */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: #4caf50; /* Green color for completed actions */
+        transition: width 0.5s ease; /* Smooth transition for the fill */
+    }
 </style>
 
 {% endblock %}

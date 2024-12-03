@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Campaign, Transaction, Group, GroupMembership, GroupInvitation
+from .models import Profile, Campaign, Group, GroupMembership, GroupInvitation
 from django.shortcuts import redirect
 from .forms import ProfileForm
 from django.utils import timezone
-from .forms import TransactionForm, CampaignForm 
-from .forms import ProfileForm, GroupForm
+from .forms import TransactionForm, CampaignForm, RedeemForm
+from .forms import ProfileForm, GroupForm, ProfilePictureForm
 from django.contrib.auth.models import User 
 from django.http import HttpResponseForbidden
 from functools import wraps
@@ -71,9 +71,13 @@ def profile(request):
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('/')  # Redirect to the homepage after updating the profile
+           
     else:
         form = ProfileForm(instance=profile)
+    if profile.user_type == 'admin':
+        profile.user.is_staff = True
+        profile.user.is_superuser = True
+        profile.user.save()
     return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 @login_required
@@ -99,18 +103,83 @@ def rewards(request):
     profile = request.user.profile
     today = timezone.now()
     
-    # Get available rewards
     available_rewards = Campaign.objects.filter(
         campaign_type='redeem',
         start_date__lte=today,
         end_date__gte=today
     ).order_by('-start_date')
 
+    # Get rewards for each point threshold
+    rewards_1000 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=1000,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+    
+    rewards_1500 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=1500,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+    
+    rewards_2000 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=2000,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+    
+    rewards_2500 = Campaign.objects.filter(
+        campaign_type='redeem',
+        individual_points=2500,
+        start_date__lte=today,
+        end_date__gte=today
+    )
+
+    # Calculate plant growth based on user's current points
+    max_points = 2500
+    current_points = profile.current_points
+    growth_percentage = (current_points / max_points) * 100 if current_points <= max_points else 100
+
+    # Instantiate the RedeemForm
+    redeem_form = RedeemForm(current_points=current_points)
+
+    if request.method == 'POST':
+        redeem_form = RedeemForm(request.POST)
+        if redeem_form.is_valid():
+            # Save the form and associate it with the logged-in user
+            redeem_form.save(user=request.user)
+            return redirect('rewards')  # Reload the page to show updated data
+
+        # Instantiate the RedeemForm with current_points
+    if request.method == 'POST':
+        redeem_form = RedeemForm(request.POST, current_points=current_points)
+        if redeem_form.is_valid():
+            # Save the form and associate it with the logged-in user
+            redeem_form.save(user=request.user)
+            return redirect('rewards')  # Reload the page to show updated data
+        else:
+            error_message = "There was an error redeeming the reward. Please try again."
+    else:
+        redeem_form = RedeemForm(current_points=current_points)
+
     context = {
         'profile': profile,
         'available_rewards': available_rewards,
+        'rewards_1000': rewards_1000,
+        'rewards_1500': rewards_1500,
+        'rewards_2000': rewards_2000,
+        'rewards_2500': rewards_2500,
+        'growth_percentage': growth_percentage,
+        'current_points': current_points,
+        'redeem_form': redeem_form,
+        'error_message': error_message if 'error_message' in locals() else None,
+
     }
     return render(request, 'rewards.html', context)
+
 
 @login_required
 @admin_required
@@ -155,27 +224,25 @@ def campaigns(request):
 @login_required
 @admin_required
 def edit_campaign(request, campaign_id):
-    campaign = get_object_or_404(Campaign, id=campaign_id)
-
+    campaign = Campaign.objects.get(campaign_id=campaign_id)
     if request.method == 'POST':
-        if 'save_campaign' in request.POST:
+        if 'save_changes' in request.POST['action']:
             form = CampaignForm(request.POST, request.FILES, instance=campaign)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Campaign updated successfully.')
                 return redirect('campaigns')
         
-        elif 'delete_campaign' in request.POST:
+        elif 'delete_campaign' in request.POST['action']:
             campaign.delete()
             messages.success(request, 'Campaign deleted successfully.')
             return redirect('campaigns')
 
-    elif request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Include all fields for the JSON response
+    elif request.method == 'GET':
         campaign_data = {
             'title': campaign.title,
             'description': campaign.description,
-            'start_date': campaign.start_date.strftime('%Y-%m-%dT%H:%M'),  # Use ISO format for datetime
+            'start_date': campaign.start_date.strftime('%Y-%m-%dT%H:%M'),
             'end_date': campaign.end_date.strftime('%Y-%m-%dT%H:%M'),
             'individual_points': campaign.individual_points,
             'group_points': campaign.group_points,
@@ -183,11 +250,8 @@ def edit_campaign(request, campaign_id):
             'campaign_id': campaign.campaign_id,
         }
         return JsonResponse(campaign_data)
-
-    else:
-        form = CampaignForm(instance=campaign)
-
-    return render(request, 'campaign_modal.html', {'form': form, 'campaign': campaign})
+    form = CampaignForm(instance=campaign)
+    return render(request, 'campaign.html', {'campaign_form': form, 'campaign': campaign})
 
 
 @login_required
@@ -206,7 +270,7 @@ def create_group(request):
             return redirect('groups')
     else:
         form = GroupForm()
-    return render(request, 'create_group.html', {'form': form})
+    return render(request, 'create_group.html', {'form': form, "profile" : request.user.profile})
 
 
 @login_required
@@ -272,4 +336,35 @@ def groups(request):
     user_group = profile.group
     invitations = GroupInvitation.objects.filter(invitee=request.user, accepted=False)
     is_leader = GroupMembership.objects.filter(user=request.user, group=user_group, is_leader=True).exists() if user_group else False
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader})
+    if request.method == 'POST':
+        if 'profile_picture' in request.FILES:
+            profile_picture_form = ProfilePictureForm(request.POST, request.FILES, instance=user_group)
+            if profile_picture_form.is_valid():
+                profile_picture_form.save()
+                return redirect('groups')
+        elif request.POST.get('action') == 'delete' and is_leader:
+            user_group.delete()
+            user_group = None
+        else:
+            group_form = GroupForm(request.POST, instance=user_group)
+            if group_form.is_valid():
+                group_form.save()
+                return redirect('groups')
+    else:
+        group_form = GroupForm(instance=user_group)
+        profile_picture_form = ProfilePictureForm(instance=user_group)
+
+    if user_group:
+        # Calculate the percentage of completed actions
+        total_members = user_group.members.count()
+        completed_members = Profile.objects.filter(user__in=user_group.members.all(), completed_action=True).count()
+        if total_members > 0:
+            completion_percentage = (completed_members / total_members) * 100
+        else:
+            completion_percentage = 0
+    else:
+        total_members = 0
+        completed_members = 0
+        completion_percentage = 0
+
+    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader, 'group_form': group_form, 'profile_picture_form': profile_picture_form, 'completed_members': completed_members, 'completion_percentage': completion_percentage, 'total_members': total_members})

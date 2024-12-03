@@ -16,6 +16,37 @@ class ProfileForm(forms.ModelForm):
             'user_type': forms.Select(attrs={'class': 'form-control'}),
         }
 
+class RedeemForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['campaign']  # Only include the campaign field
+        widgets = {
+            'campaign': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        current_points = kwargs.pop('current_points', 0)  # Get current_points from kwargs
+        super().__init__(*args, **kwargs)
+        today = timezone.now()
+        # Filter campaigns to show only active redeem campaigns the user can afford
+        self.fields['campaign'].queryset = Campaign.objects.filter(
+            campaign_type='redeem',
+            start_date__lte=today,
+            end_date__gte=today
+            ,individual_points__lte=current_points  # Only campaigns within the user's budget
+        )
+
+    def save(self, user, commit=True):
+        # Create the transaction and associate it with the logged-in user
+        instance = super().save(commit=False)
+        instance.user = user
+        instance.transaction_type = 'redeem'  # Explicitly set transaction type
+        if commit:
+            instance.save()
+        return instance
+
+
+
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
@@ -44,6 +75,7 @@ class CampaignForm(forms.ModelForm):
     class Meta:
         model = Campaign
         fields = ['campaign_picture', 'title', 'description', 'start_date', 'end_date', 'individual_points', 'group_points', 'campaign_type']
+        readonly_fields = ['campaign_id']
         widgets = {
             'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'resize: none;', 'rows': 3}),
             'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
@@ -54,3 +86,8 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name']
+
+class ProfilePictureForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['profile_picture']

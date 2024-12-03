@@ -16,7 +16,9 @@ class Group(models.Model):
     members = models.ManyToManyField(User, related_name='member_list', through='GroupMembership')
     leader = models.ForeignKey(User, related_name='led_groups', on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.IntegerField(default=0)
+    profile_picture = models.ImageField(upload_to='group_pics/', null=True, blank=True, default= 'img/profile.png')
 
+    
     def __str__(self):
         return self.name 
 
@@ -38,8 +40,7 @@ class Group(models.Model):
 class Profile(models.Model):
     USER_TYPES = [
         ('student', 'Student'),
-        ('mod', 'Moderator'),
-        ('admin', 'Admin'),
+        ('admin', 'Supervisor'),
     ]
     
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
@@ -52,6 +53,7 @@ class Profile(models.Model):
     email = models.EmailField(max_length=100, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.IntegerField(default=0)
+    completed_action = models.BooleanField(default=False)
 
     # Point-related fields
     lifetime_points = models.IntegerField(default=0)
