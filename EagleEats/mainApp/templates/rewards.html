@@ -111,9 +111,6 @@
                 {% for reward in rewards_2500 %}
                 <div class="reward-item {% if current_points < 2500 %}locked{% endif %}">
                     <h3>{{ reward.title }}</h3>
-                    {% if current_points >= 2500 %}
-                    <button class="redeem-btn" onclick="redeemReward('{{ reward.campaign_id }}')">Redeem</button>
-                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
