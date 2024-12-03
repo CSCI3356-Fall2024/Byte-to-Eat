@@ -35,21 +35,36 @@
                 </div>
             </div>
         </div>
-
-        <div class="member-box">
-            <span>{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader)</small></span>
-            <span class="points ">{{ user_group.leader.profile.lifetime_points }} pts</span>
-        </div>
         {% for member in user_group.members.all %}
-            {% if member != user_group.leader %}
+            {% if member == user_group.leader %}
                 {% if member == user %}
                     <div class="member-box highlight">
-                        <span>{{ member.first_name }} {{ member.last_name }}</span>
+                        <span class="status-circle {% if member.profile.completed_action %}completed{% else %}not-completed{% endif %}"></span>
+                        <span class="member-name">{{ member.first_name }} {{ member.last_name }} <small>(leader)</small></span></span>
                         <span class="points ">{{ member.profile.lifetime_points }} pts</span>
                     </div>
                 {% else %}
                     <div class="member-box">
-                        <span>{{ member.first_name }} {{ member.last_name }}</span>
+                        <span class="status-circle {% if member.profile.completed_action %}completed{% else %}not-completed{% endif %}"></span>
+                        <span class="member-name">{{ user_group.leader.first_name }} {{ user_group.leader.last_name }} <small>(leader)</small></span>
+                        <span class="points ">{{ user_group.leader.profile.lifetime_points }} pts</span>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% for member in user_group.members.all %}
+            {% if member != user_group.leader %}
+                {% if member == user %}
+                    <div class="member-box highlight">
+                        <span class="status-circle {% if member.profile.completed_action %}completed{% else %}not-completed{% endif %}"></span>
+                        <span class="member-name">{{ member.first_name }} {{ member.last_name }}</span>
+                        <span class="points ">{{ member.profile.lifetime_points }} pts</span>
+                    </div>
+                {% else %}
+                    <div class="member-box">
+                        <span class="status-circle {% if member.profile.completed_action %}completed{% else %}not-completed{% endif %}"></span>
+                        <span class="member-name">{{ member.first_name }} {{ member.last_name }}</span>
                         <span class="points ">{{ member.profile.lifetime_points }} pts</span>
                     </div>
                 {% endif %}
@@ -77,18 +92,33 @@
         </div>
     </div>
 
-    <h4 style="padding-top: 40px; padding-bottom: 10px;"> Weekly Group Challenge Progress: </h4>
+    <h4 style="padding-top: 40px; padding-bottom: 10px;"> WEEKLY GROUP CHALLENGE: </h4>
     <div class="group-border">
         <div class="group-challenge">
             <div class="left-column">
-                <div>Every group member must complete a sustainable action...</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: {{ completion_percentage }}%;"></div>
+                <h5>Every week, every group member.</h5>
+                <div class="progress-outline">
+                    <p style="padding-bottom: 0px;">COMPLETION: {{ completion_percentage }}%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ completion_percentage }}%;"></div>
+                    </div>
                 </div>
             </div>
             <div class="right-column">
-                <div>So far ___ group members have been sustainable...</div>
-                <div>___ more to go!</div>
+                <div class="inner-column">
+                    {% if completed_members == 1 %}
+                        <h5>So far</h5><h1 style="color: #b8db15"><b> 1 </b></h1><h5>group member has been sustainable.</h5>
+                    {% else %}
+                        <h5>So far</h5><h1 style="color: #b8db15"><b> {{ completed_members }} </b></h1><h5>group members have been sustainable.</h5>
+                    {% endif %}
+                </div>
+                <div class="inner-column">
+                    {% if remaining_members == 0 %}
+                        <h5>You've done it!</h5><h1 style="color: #b8db15"><b> 0 </b></h1><h5>group members left.</h5>
+                    {% else %}
+                        <h5>Encourage your teammates!</h5><h1 style="color: #b8db15"><b> {{ remaining_members }} </b></h1><h5>more to go!</h5>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -326,26 +356,81 @@
         background-color: #E6E5E3;
         color: #000000;
         border-radius: 10px;
-        margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
         font-size: initial;
         font-weight: normal;
     }
 
+    .progress-outline {
+        padding: 10px;
+        margin: 30px;
+        margin-bottom: 10px;
+        color: #000000;
+        background-color: #fcfcfc;
+        border-radius: 10px;
+    }
+
     .progress-bar {
         display: flex;
-        margin-top: 10px;
-        padding: 5px; /* Add padding to create space between the border and slots */
+        margin-top: 0px;
+        padding: 0px;
         border: 2px solid #555; /* Dark grey border */
         border-radius: 10px; /* Rounded corners */
+        height: 20px; /* Ensure the height is set */
+        width: 100%; /* Ensure the width is set */
+        background-color: #e0e0e0; /* Light grey background */
     }
 
     .progress-fill {
         height: 100%;
-        background-color: #4caf50; /* Green color for completed actions */
+        background-color: #b8db15; /* Green color for completed actions */
         transition: width 0.5s ease; /* Smooth transition for the fill */
+        width: 0; /* Default width */
     }
+
+    .left-column, .inner-left-column{
+        flex: 1;
+    }
+
+    .right-column{
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .inner-column {
+        flex: 1; /* Ensures both columns take up equal space */
+        padding: 10px; /* Adds some padding for better spacing */
+        padding-left: 50px;
+        text-align: center;
+    }
+
+    .status-circle {
+        display: inline-block;
+        width: 10px; /* Adjust the size as needed */
+        height: 10px; /* Adjust the size as needed */
+        border-radius: 50%; /* Makes the element a circle */
+        margin: 7px; 
+        margin-right: 15px;
+        vertical-align: middle; /* Aligns the circle with the text */
+    }
+
+    .completed {
+        background-color: #4caf50; /* Green color for completed actions */
+    }
+
+    .not-completed {
+        background-color: #ffffff; /* White color for not completed actions */
+        border: 1px solid #ccc; /* Optional: Add a border to make the circle visible */
+    }
+
+    .member-name {
+        flex-grow: 1; /* Ensures the name takes up available space */
+        text-align: left; /* Align text to the left */
+    }
+
 </style>
 
 {% endblock %}
