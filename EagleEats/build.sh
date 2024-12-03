@@ -10,6 +10,9 @@ python manage.py makemigrations
 python manage.py migrate
 
 # Collect static files
+
+python manage.py create_test_campaign
+python manage.py create_test_user
 python manage.py collectstatic --no-input
 
 # Run custom management commands
