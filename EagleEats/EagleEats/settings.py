@@ -116,9 +116,22 @@ STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {
-          
-        },
+            "access_key": "AKIATQZCSLBMZGIQTIKH",
+            "secret_key": "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",
+            "bucket_name": "bytetoeat",
+        }
+        
     },
+    "staticfiles" : {
+        "BACKEND" : "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "access_key": "AKIATQZCSLBMZGIQTIKH",
+            "secret_key": "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",
+            "bucket_name": "bytetoeat",
+        }
+    }
+        
+
 }
 
 WSGI_APPLICATION = 'EagleEats.wsgi.application'
