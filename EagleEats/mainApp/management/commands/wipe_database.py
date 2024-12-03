@@ -7,11 +7,7 @@ class Command(BaseCommand):
     help = "wipe database"
 
     def handle(self, *args, **kwargs):
-        Profile.objects.all().delete()
-        Group.objects.all().delete()
-        User.objects.all().delete()
-        Campaign.objects.all().delete()
-
+    
 
         with connection.cursor() as cursor:
             cursor.execute("DROP SCHEMA public CASCADE;")

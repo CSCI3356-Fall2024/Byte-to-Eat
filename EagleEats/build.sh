@@ -11,9 +11,4 @@ python manage.py migrate
 
 # Collect static files
 
-python manage.py wipe_database
-python manage.py create_test_campaigns
-python manage.py create_test_users
 python manage.py collectstatic --no-input
-
-# Run custom management commands
