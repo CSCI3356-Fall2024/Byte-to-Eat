@@ -11,6 +11,7 @@ from django.http import HttpResponseForbidden
 from functools import wraps
 from django.contrib import messages
 from django.http import JsonResponse
+from django.conf import settings
 
 
 def admin_required(view_func):
@@ -204,6 +205,7 @@ def campaigns(request):
         'inactive_campaigns': inactive_campaigns,
         'transaction_form': transaction_form,
         'campaign_form': campaign_form,
+        'settings': settings,
     }
     return render(request, 'campaign.html', context)
 
@@ -238,6 +240,20 @@ def edit_campaign(request, campaign_id):
         return JsonResponse(campaign_data)
     form = CampaignForm(instance=campaign)
     return render(request, 'campaign.html', {'campaign_form': form, 'campaign': campaign})
+
+
+@login_required
+@admin_required
+def reset_group_challenge(request):
+    profiles = Profile.objects.all()
+    for profile in profiles:
+        profile.completed_action = False
+        profile.save()
+    if request.method == 'POST':
+        for group in Group.objects.all():
+            group.challenge_completed = False
+            group.save()
+    return redirect('campaigns')
 
 
 @login_required
@@ -345,12 +361,25 @@ def groups(request):
         total_members = user_group.members.count()
         completed_members = Profile.objects.filter(user__in=user_group.members.all(), completed_action=True).count()
         if total_members > 0:
-            completion_percentage = (completed_members / total_members) * 100
+            completion_percentage = round((completed_members / total_members) * 100)
         else:
             completion_percentage = 0
+        remaining_members = total_members - completed_members
     else:
         total_members = 0
         completed_members = 0
         completion_percentage = 0
+        remaining_members = 0
 
-    return render(request, 'groups.html', {'user_group': user_group, 'invitations': invitations, 'profile': profile, 'is_leader': is_leader, 'group_form': group_form, 'profile_picture_form': profile_picture_form, 'completed_members': completed_members, 'completion_percentage': completion_percentage, 'total_members': total_members})
+    return render(request, 'groups.html', {
+        'user_group': user_group,
+        'invitations': invitations,
+        'profile': profile,
+        'is_leader': is_leader,
+        'group_form': group_form,
+        'profile_picture_form': profile_picture_form,
+        'completed_members': completed_members,
+        'completion_percentage': completion_percentage,
+        'total_members': total_members,
+        'remaining_members': remaining_members
+    })

@@ -26,7 +26,7 @@ LOGOUT_REDIRECT_URL = '/'
 SECRET_KEY = 'django-insecure-o5y5zdbr*4nb4_8iup$18wb&^ce3k2zmaslsa23$#7@1n^=m4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -194,3 +194,7 @@ if not DEBUG:    # Tell Django to copy static assets into a path called `staticf
 
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+##default weekly group challenge points
+GROUP_CHALLENGE_POINTS = 500

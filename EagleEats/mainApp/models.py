@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
 from django.utils import timezone
 import uuid
+from django.conf import settings
 
 
 class Group(models.Model):
@@ -17,7 +18,7 @@ class Group(models.Model):
     leader = models.ForeignKey(User, related_name='led_groups', on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.IntegerField(default=0)
     profile_picture = models.ImageField(upload_to='group_pics/', null=True, blank=True, default= 'img/profile.png')
-
+    challenge_completed = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name 
@@ -35,7 +36,6 @@ class Group(models.Model):
             total_points += member.profile.lifetime_points
         self.points = total_points
         self.save()
-
 
 class Profile(models.Model):
     USER_TYPES = [
@@ -131,6 +131,7 @@ def update_user_points(sender, instance, created, **kwargs):
         if instance.transaction_type == 'action':
             profile.lifetime_points += campaign_points
             profile.current_points += campaign_points
+            profile.completed_action = True #sets the boolean true for the group challenge
         elif instance.transaction_type == 'redeem':
             profile.current_points -= campaign_points
         profile.save()
@@ -180,3 +181,21 @@ def set_transaction_id_and_validate(sender, instance, **kwargs):
     today = timezone.now()
     if not (instance.campaign.start_date <= today <= instance.campaign.end_date):
         raise ValueError("Cannot assign transactions to inactive campaigns.")
+
+@receiver(post_save, sender=Transaction)
+def handle_transaction(sender, instance, **kwargs):
+    user = instance.user
+    group = user.member_list.first()  # Assuming a user belongs to one group
+
+    if group:
+        check_and_update_group_points(group)
+
+
+def check_and_update_group_points(group):
+   if not group.challenge_completed:
+        all_completed = all(member.profile.completed_action for member in group.members.all())
+        if all_completed:
+           group.earned_points += settings.GROUP_CHALLENGE_POINTS
+           group.update_points()  # Update total points
+           group.challenge_completed = True
+           group.save()
