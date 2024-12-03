@@ -13,6 +13,3 @@ python manage.py migrate
 python manage.py collectstatic --no-input
 
 # Run custom management commands
-python manage.py wipe_database
-python manage.py create_test_users
-python manage.py create_test_campaigns
