@@ -51,6 +51,8 @@ AWS_ACCESS_KEY_ID = "AKIATQZCSLBM5XFC4VS7"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "bytetoeat"
 AWS_QUERYSTRING_AUTH = False
+AWS_S3_REGION_NAME = "us-east-2"
+# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 #added this section for Google OAuth
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
@@ -174,7 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 # Media files
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
