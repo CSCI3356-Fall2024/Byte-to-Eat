@@ -15,6 +15,7 @@
             </form>
         </div>
     </section>
+
     <style>
         .table {
             table-layout: fixed; /* Fix the table layout */
@@ -26,12 +27,29 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            cursor: pointer; /* Add a cursor pointer to indicate it's clickable */
+        }
+        .campaign-users {
+            display: none;
+            padding: 10px;
+            background-color: #f2f2f2;
+            margin-top: 10px;
+            max-height: 150px;  /* Set a maximum height */
+            overflow-y: auto;   /* Enable scrolling if content overflows */
         }
     
         .table-dates {
             min-width: 150px; /* Set a minimum width for the dates column */
         }
+
+        .campaign-details {
+            display: none; /* Hide details by default */
+            padding: 10px;
+            background-color: #f2f2f2;
+            margin-top: 10px;
+        }
     </style>
+
     <!-- Active Campaigns Section -->
     <section class="mb-5">
         <h3 class="mb-3" style="font-size: 1.5rem; color: #66723D;">Active</h3>
@@ -47,10 +65,9 @@
                                     <!-- Trigger button for the campaign modal -->
                                     <button type="button" class="btn btn-success"
                                     style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1rem; 
-                                    display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; "data-bs-toggle="modal" data-bs-target="#campaignModal">
+                                    display: flex; align-items: center; justify-content: center; padding: 0; margin: 0;" data-bs-toggle="modal" data-bs-target="#campaignModal">
                                     +
-                                </button>
-                                
+                                    </button>
                                 </div>
                             </th>
                         </tr>
@@ -58,7 +75,7 @@
                     <tbody style="background-color: #f2f2f2;">
                         {% for campaign in active_campaigns %}
                             <tr>
-                                <td style="padding: 15px;">{{ campaign.title }}</td>
+                                <td style="padding: 15px;" class="table-name" onclick="toggleDetails('{{ campaign.campaign_id }}')">{{ campaign.title }}</td>
                                 <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
                                 <td style="padding: 15px;">
                                     <a href="#" style="text-decoration: underline; color: #66723D;"
@@ -67,7 +84,11 @@
                                         <span style="white-space: nowrap;">Edit</span>
                                     </a>
                                 </td>
-                                
+                            </tr>
+                            <tr id="details-{{ campaign.campaign_id }}" class="campaign-users">
+                                <td colspan="3" style="padding: 15px;">
+                                    <p><strong>users go here</strong></p>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -94,10 +115,9 @@
                                 <div style="display: flex;">
                                     <button type="button" class="btn btn-success"
                                     style="border-radius: 50%; width: 30px; height: 30px; background-color: #6f8f40; color: white; font-size: 1rem; 
-                                    display: flex; align-items: center; justify-content: center; padding: 0; margin: 0;"data-bs-toggle="modal" data-bs-target="#campaignModal">
+                                    display: flex; align-items: center; justify-content: center; padding: 0; margin: 0;" data-bs-toggle="modal" data-bs-target="#campaignModal">
                                     +
-                                </button>
-                                
+                                    </button>
                                 </div>
                             </th>
                         </tr>
@@ -105,16 +125,21 @@
                     <tbody style="background-color: #f2f2f2;">
                         {% for campaign in inactive_campaigns %}
                             <tr>
-                                <td style="padding: 15px;">{{ campaign.title }}</td>
+                                <td style="padding: 15px;" class="table-name" onclick="toggleDetails('{{ campaign.campaign_id }}')">{{ campaign.title }}</td>
                                 <td style="padding: 15px;">{{ campaign.start_date }} - {{ campaign.end_date }}</td>
                                 <td style="padding: 15px;">
                                     <a href="#" style="text-decoration: underline; color: #66723D;"
                                     data-bs-toggle="modal" data-bs-target="#editCampaignModal"
                                     onclick="loadCampaignData('{{ campaign.campaign_id }}')">
                                     <span style="white-space: nowrap;">Edit</span>
-                                </a>
+                                    </a>
                                 </td>
-                                
+                            </tr>
+                            <tr id="details-{{ campaign.campaign_id }}" class="campaign-details">
+                                <td colspan="3" style="padding: 15px;">
+                                    <p><strong>Description:</strong> {{ campaign.description }}</p>
+                                    <p><strong>Additional Info:</strong> {{ campaign.additional_info }}</p>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -140,27 +165,7 @@
                         {% csrf_token %}
                         {{ campaign_form.as_p }}
                         {{ campaign_form.campaign_id.as_hidden }}
-                        <button type="submit" name="save_campaign" style="background-color:#66723D " class="btn btn-primary">Save Campaign</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="editCampaignModal" tabindex="-1" aria-labelledby="editCampaignModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #66723D; color: white;">
-                    <h5 class="modal-title" id="editCampaignModalLabel">Edit Campaign</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCampaignForm" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ campaign_form.as_p }}
-                        <button type="button" name="campaign_id" hidden="True"></button>
-                        <button type="button" id="saveChanges" name="save_changes" style="background-color:#66723D" class="btn btn-primary">Save Changes</button>
-                        <button type="button" id="deleteCampaign" name="delete_campaign" style="background-color:red" class="btn btn-danger">Delete Campaign</button>
+                        <button type="submit" name="save_campaign" style="background-color:#66723D" class="btn btn-primary">Save Campaign</button>
                     </form>
                 </div>
             </div>
@@ -216,6 +221,14 @@
             .catch(error => console.error('Error loading campaign data:', error));
 }
 
+function toggleDetails(campaignId) {
+        var detailsRow = document.getElementById('details-' + campaignId);
+        if (detailsRow.style.display === "none" || detailsRow.style.display === "") {
+            detailsRow.style.display = "table-row";
+        } else {
+            detailsRow.style.display = "none";
+        }
+    }
 </script>
 
 {% endblock %}
